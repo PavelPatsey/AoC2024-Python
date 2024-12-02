@@ -1,16 +1,13 @@
 from typing import List
 
 
-def get_data(input_file):
+def get_reports(input_file):
     with open(input_file, "r") as file:
         data = file.read().splitlines()
-        res = []
-        for d in data:
-            res.append([int(x) for x in d.split()])
-    return res
+    return [[int(x) for x in d.split()] for d in data]
 
 
-def sign(x):
+def sign(x: int) -> int:
     if x > 0:
         return 1
     elif x == 0:
@@ -38,11 +35,11 @@ def is_safe_2(report: List[int]) -> bool:
 
 
 def main():
-    data = get_data("input")
-    print(data)
+    reports = get_reports("input")
+    print(reports)
     counter_1 = 0
     counter_2 = 0
-    for report in data:
+    for report in reports:
         counter_1 += is_safe(report)
         counter_2 += is_safe_2(report)
     print(counter_1)
