@@ -32,10 +32,9 @@ def is_safe(report: List[int]) -> bool:
 
 def is_safe_2(report: List[int]) -> bool:
     for i in range(len(report)):
-        if is_safe(report[:i] + report[i + 1:]):
+        if is_safe(report[:i] + report[i + 1 :]):
             return True
     return False
-
 
 
 def main():
