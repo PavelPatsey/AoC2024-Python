@@ -30,13 +30,24 @@ def is_safe(report: List[int]) -> bool:
     return True
 
 
+def is_safe_2(report: List[int]) -> bool:
+    for i in range(len(report)):
+        if is_safe(report[:i] + report[i + 1:]):
+            return True
+    return False
+
+
+
 def main():
     data = get_data("input")
     print(data)
     counter_1 = 0
+    counter_2 = 0
     for report in data:
         counter_1 += is_safe(report)
+        counter_2 += is_safe_2(report)
     print(counter_1)
+    print(counter_2)
 
 
 if __name__ == "__main__":
