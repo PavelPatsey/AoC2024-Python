@@ -36,6 +36,7 @@ def main():
     counter_1 = 0
     for report in data:
         counter_1 += is_safe(report)
+    print(counter_1)
 
 
 if __name__ == "__main__":
