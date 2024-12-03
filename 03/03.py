@@ -1,11 +1,12 @@
 import re
+from typing import List
 
 
 def get_instructions(input_file):
     pattern = r"mul\(\d{1,3},\d{1,3}\)"
     with open(input_file, "r") as file:
         data = file.read()
-        matches = re.findall(pattern, data)
+    matches = re.findall(pattern, data)
     return matches
 
 
@@ -28,32 +29,31 @@ def get_instructions_2(input_file):
     return instructions
 
 
-def mul(a, b):
+def mul(a: int, b: int) -> int:
     return a * b
 
 
-def get_answer_2(instructions):
+def get_answer_1(instructions: List[str]) -> int:
+    return sum(eval(inst) for inst in instructions)
+
+
+def get_answer_2(instructions: List[str]) -> int:
     enable = True
     res = 0
     for inst in instructions:
         if inst == "don't()":
             enable = False
-            continue
         elif inst == "do()":
             enable = True
-            continue
-
-        if enable:
+        elif enable:
             res += eval(inst)
     return res
 
 
 def main():
-    instructions = get_instructions("test_input")
-    # print(instructions)
-    # print(sum(eval(inst) for inst in instructions))
+    instructions = get_instructions("input")
+    print(get_answer_1(instructions))
     instructions_2 = get_instructions_2("input")
-    print(instructions_2)
     print(get_answer_2(instructions_2))
 
 
