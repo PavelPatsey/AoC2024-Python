@@ -2,7 +2,7 @@ import re
 from typing import List
 
 
-def get_instructions(input_file):
+def get_instructions(input_file) -> List[str]:
     pattern = r"mul\(\d{1,3},\d{1,3}\)"
     with open(input_file, "r") as file:
         data = file.read()
@@ -10,7 +10,7 @@ def get_instructions(input_file):
     return matches
 
 
-def get_instructions_2(input_file):
+def get_instructions_2(input_file) -> List[str]:
     pattern = r"^mul\(\d{1,3},\d{1,3}\)"
     with open(input_file, "r") as file:
         data = file.read()
