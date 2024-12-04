@@ -1,3 +1,5 @@
+from typing import List
+
 DIRS = [
     (1, 0),
     (1, -1),
@@ -10,7 +12,7 @@ DIRS = [
 ]
 
 
-def get_data(input_file):
+def get_data(input_file) -> List[str]:
     with open(input_file, "r") as file:
         data = file.read().splitlines()
     return data
@@ -29,43 +31,38 @@ def extend_data(data):
 
 
 def get_answer_1(matrix):
-    def _xmas_appears_number(r, c):
+    def _xmas_appears_number(r: int, c: int) -> int:
         counter = 0
         xmas = ["X", "M", "A", "S"]
+        n = len(xmas)
         for dir in DIRS:
-            pretentend = [matrix[r + i * dir[0]][c + i * dir[1]] for i in range(4)]
+            pretentend = [matrix[r + i * dir[0]][c + i * dir[1]] for i in range(n)]
             if pretentend == xmas:
                 counter += 1
-
         return counter
 
-    LEN_ROWS = len(matrix)
-    LEN_COLS = len(matrix[0])
-
     res = 0
-    for row in range(3, LEN_ROWS - 3):
-        for col in range(3, LEN_COLS - 3):
+    for row in range(3, len(matrix) - 3):
+        for col in range(3, len(matrix[0]) - 3):
             res += _xmas_appears_number(row, col)
     return res
 
 
 def get_answer_2(matrix):
-    def is_mas_appears(r, c):
+    def is_mas_appears(r: int, c: int) -> bool:
         mas = ["M", "A", "S"]
+        n = len(mas)
         dir = (1, 1)
-        pretentend_1 = [matrix[r + i * dir[0]][c + i * dir[1]] for i in range(3)]
+        pretentend_1 = [matrix[r + i * dir[0]][c + i * dir[1]] for i in range(n)]
         dir = (1, -1)
-        pretentend_2 = [matrix[r + i * dir[0]][c + 2 + i * dir[1]] for i in range(3)]
+        pretentend_2 = [matrix[r + i * dir[0]][c + 2 + i * dir[1]] for i in range(n)]
         return (pretentend_1 == mas or pretentend_1 == mas[::-1]) and (
             pretentend_2 == mas or pretentend_2 == mas[::-1]
         )
 
-    LEN_ROWS = len(matrix)
-    LEN_COLS = len(matrix[0])
-
     res = 0
-    for row in range(3, LEN_ROWS - 3):
-        for col in range(3, LEN_COLS - 3):
+    for row in range(3, len(matrix) - 3):
+        for col in range(3, len(matrix[0]) - 3):
             if is_mas_appears(row, col):
                 res += 1
     return res
@@ -73,9 +70,9 @@ def get_answer_2(matrix):
 
 def main():
     data = get_data("input")
-    extended_data = extend_data(data)
-    print(get_answer_1(extended_data))
-    print(get_answer_2(extended_data))
+    extended_matrix = extend_data(data)
+    print(get_answer_1(extended_matrix))
+    print(get_answer_2(extended_matrix))
 
 
 if __name__ == "__main__":
