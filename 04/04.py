@@ -46,11 +46,11 @@ def get_answer(matrix: List[List[str]]) -> Tuple[int]:
         n = len(mas)
         d = (1, 1)
         candidate_1 = [matrix[r + i * d[0]][c + i * d[1]] for i in range(n)]
+        if candidate_1 != mas and candidate_1 != mas[::-1]:
+            return False
         d = (1, -1)
         candidate_2 = [matrix[r + i * d[0]][c + 2 + i * d[1]] for i in range(n)]
-        return (candidate_1 == mas or candidate_1 == mas[::-1]) and (
-            candidate_2 == mas or candidate_2 == mas[::-1]
-        )
+        return candidate_2 == mas or candidate_2 == mas[::-1]
 
     res_1, res_2 = 0, 0
     for row in range(EN, len(matrix) - EN):
