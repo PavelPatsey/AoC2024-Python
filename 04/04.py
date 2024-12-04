@@ -4,21 +4,11 @@ def get_data(input_file):
     return data
 
 
-def convert_data(data):
-    xmas_set = {"X", "M", "A", "S"}
-    converted_data = []
-    for line in data:
-        converted_line = []
-        for char in line:
-            if char in xmas_set:
-                converted_line.append(char)
-            else:
-                converted_line.append(".")
-        converted_data.append(converted_line)
-
+def extend_data(data):
+    converted_data = [[char for char in line] for line in data]
     row = ["."] * (len(data[0]) + 6)
-    extended = [row, row, row]
 
+    extended = [row, row, row]
     for line in converted_data:
         extended.append(["."] * 3 + line + ["."] * 3)
     extended.extend([row, row, row])
@@ -26,16 +16,20 @@ def convert_data(data):
     return extended
 
 
-def get_answer_1(data):
-    return
+def get_answer_1(extended_data):
+    LEN_ROWS = len(extended_data)
+    LEN_COLS = len(extended_data[0])
+    for r in range(3, LEN_ROWS - 3):
+        for c in range(3, LEN_COLS - 3):
+            print(extended_data[r])
 
 
 def main():
     data = get_data("test_input")
-    print(data)
-    converted_data = convert_data(data)
-    print(converted_data)
-    # print(get_answer_1(data))
+    # print(data)
+    extended_data = extend_data(data)
+    # print(converted_data)
+    print(get_answer_1(extended_data))
 
 
 if __name__ == "__main__":
