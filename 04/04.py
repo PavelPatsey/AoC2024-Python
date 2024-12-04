@@ -28,7 +28,7 @@ def get_extended_matrix(data: List[str]) -> List[List[str]]:
     return extended
 
 
-def get_answer_1(matrix):
+def get_answer(matrix):
     def _xmas_appears_number(r: int, c: int) -> int:
         counter = 0
         xmas = ["X", "M", "A", "S"]
@@ -39,15 +39,7 @@ def get_answer_1(matrix):
                 counter += 1
         return counter
 
-    res = 0
-    for row in range(3, len(matrix) - 3):
-        for col in range(3, len(matrix[0]) - 3):
-            res += _xmas_appears_number(row, col)
-    return res
-
-
-def get_answer_2(matrix):
-    def is_mas_appears(r: int, c: int) -> bool:
+    def _is_x_mas_appears(r: int, c: int) -> bool:
         mas = ["M", "A", "S"]
         n = len(mas)
         d = (1, 1)
@@ -58,19 +50,19 @@ def get_answer_2(matrix):
             candidate_2 == mas or candidate_2 == mas[::-1]
         )
 
-    res = 0
+    res_1, res_2 = 0, 0
     for row in range(3, len(matrix) - 3):
         for col in range(3, len(matrix[0]) - 3):
-            if is_mas_appears(row, col):
-                res += 1
-    return res
+            res_1 += _xmas_appears_number(row, col)
+            if _is_x_mas_appears(row, col):
+                res_2 += 1
+    return res_1, res_2
 
 
 def main():
     data = get_data("input")
     extended_matrix = get_extended_matrix(data)
-    print(get_answer_1(extended_matrix))
-    print(get_answer_2(extended_matrix))
+    print(get_answer(extended_matrix))
 
 
 if __name__ == "__main__":
