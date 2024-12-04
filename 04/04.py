@@ -1,15 +1,15 @@
 from typing import List
 
-DIRS = [
-    (1, 0),
-    (1, -1),
-    (0, -1),
+DIRS8 = (
     (-1, -1),
     (-1, 0),
     (-1, 1),
+    (0, -1),
     (0, 1),
+    (1, -1),
+    (1, 0),
     (1, 1),
-]
+)
 
 
 def get_data(input_file) -> List[str]:
@@ -18,15 +18,13 @@ def get_data(input_file) -> List[str]:
     return data
 
 
-def extend_data(data):
+def get_extended_matrix(data: List[str]) -> List[List[str]]:
     converted_data = [[char for char in line] for line in data]
     row = ["."] * (len(data[0]) + 6)
-
     extended = [row, row, row]
     for line in converted_data:
         extended.append(["."] * 3 + line + ["."] * 3)
     extended.extend([row, row, row])
-
     return extended
 
 
@@ -35,7 +33,7 @@ def get_answer_1(matrix):
         counter = 0
         xmas = ["X", "M", "A", "S"]
         n = len(xmas)
-        for d in DIRS:
+        for d in DIRS8:
             candidate = [matrix[r + i * d[0]][c + i * d[1]] for i in range(n)]
             if candidate == xmas:
                 counter += 1
@@ -70,7 +68,7 @@ def get_answer_2(matrix):
 
 def main():
     data = get_data("input")
-    extended_matrix = extend_data(data)
+    extended_matrix = get_extended_matrix(data)
     print(get_answer_1(extended_matrix))
     print(get_answer_2(extended_matrix))
 
