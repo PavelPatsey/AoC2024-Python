@@ -35,9 +35,9 @@ def get_answer_1(matrix):
         counter = 0
         xmas = ["X", "M", "A", "S"]
         n = len(xmas)
-        for dir in DIRS:
-            pretentend = [matrix[r + i * dir[0]][c + i * dir[1]] for i in range(n)]
-            if pretentend == xmas:
+        for d in DIRS:
+            candidate = [matrix[r + i * d[0]][c + i * d[1]] for i in range(n)]
+            if candidate == xmas:
                 counter += 1
         return counter
 
@@ -52,12 +52,12 @@ def get_answer_2(matrix):
     def is_mas_appears(r: int, c: int) -> bool:
         mas = ["M", "A", "S"]
         n = len(mas)
-        dir = (1, 1)
-        pretentend_1 = [matrix[r + i * dir[0]][c + i * dir[1]] for i in range(n)]
-        dir = (1, -1)
-        pretentend_2 = [matrix[r + i * dir[0]][c + 2 + i * dir[1]] for i in range(n)]
-        return (pretentend_1 == mas or pretentend_1 == mas[::-1]) and (
-            pretentend_2 == mas or pretentend_2 == mas[::-1]
+        d = (1, 1)
+        candidate_1 = [matrix[r + i * d[0]][c + i * d[1]] for i in range(n)]
+        d = (1, -1)
+        candidate_2 = [matrix[r + i * d[0]][c + 2 + i * d[1]] for i in range(n)]
+        return (candidate_1 == mas or candidate_1 == mas[::-1]) and (
+            candidate_2 == mas or candidate_2 == mas[::-1]
         )
 
     res = 0
