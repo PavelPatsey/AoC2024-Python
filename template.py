@@ -4,14 +4,14 @@ def get_data(input_file):
     return data
 
 
-def get_answer_1(data):
+def get_answer(data):
     return
 
 
 def main():
     data = get_data("test_input")
     print(data)
-    print(get_answer_1(data))
+    print(get_answer(data))
 
 
 if __name__ == "__main__":
