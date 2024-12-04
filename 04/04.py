@@ -43,10 +43,31 @@ def get_answer_1(matrix):
     LEN_COLS = len(matrix[0])
 
     res = 0
-    _xmas_appears_number(3, 3)
     for row in range(3, LEN_ROWS - 3):
         for col in range(3, LEN_COLS - 3):
             res += _xmas_appears_number(row, col)
+    return res
+
+
+def get_answer_2(matrix):
+    def is_mas_appears(r, c):
+        mas = ["M", "A", "S"]
+        dir = (1, 1)
+        pretentend_1 = [matrix[r + i * dir[0]][c + i * dir[1]] for i in range(3)]
+        dir = (1, -1)
+        pretentend_2 = [matrix[r + i * dir[0]][c + 2 + i * dir[1]] for i in range(3)]
+        return (pretentend_1 == mas or pretentend_1 == mas[::-1]) and (
+            pretentend_2 == mas or pretentend_2 == mas[::-1]
+        )
+
+    LEN_ROWS = len(matrix)
+    LEN_COLS = len(matrix[0])
+
+    res = 0
+    for row in range(3, LEN_ROWS - 3):
+        for col in range(3, LEN_COLS - 3):
+            if is_mas_appears(row, col):
+                res += 1
     return res
 
 
@@ -54,6 +75,7 @@ def main():
     data = get_data("input")
     extended_data = extend_data(data)
     print(get_answer_1(extended_data))
+    print(get_answer_2(extended_data))
 
 
 if __name__ == "__main__":
