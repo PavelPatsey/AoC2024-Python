@@ -1,3 +1,15 @@
+DIRS = [
+    (1, 0),
+    (1, -1),
+    (0, -1),
+    (-1, -1),
+    (-1, 0),
+    (-1, 1),
+    (0, 1),
+    (1, 1),
+]
+
+
 def get_data(input_file):
     with open(input_file, "r") as file:
         data = file.read().splitlines()
@@ -16,19 +28,31 @@ def extend_data(data):
     return extended
 
 
-def get_answer_1(extended_data):
-    LEN_ROWS = len(extended_data)
-    LEN_COLS = len(extended_data[0])
-    for r in range(3, LEN_ROWS - 3):
-        for c in range(3, LEN_COLS - 3):
-            print(extended_data[r])
+def get_answer_1(matrix):
+    def _xmas_appears_number(r, c):
+        counter = 0
+        xmas = ["X", "M", "A", "S"]
+        for dir in DIRS:
+            pretentend = [matrix[r + i * dir[0]][c + i * dir[1]] for i in range(4)]
+            if pretentend == xmas:
+                counter += 1
+
+        return counter
+
+    LEN_ROWS = len(matrix)
+    LEN_COLS = len(matrix[0])
+
+    res = 0
+    _xmas_appears_number(3, 3)
+    for row in range(3, LEN_ROWS - 3):
+        for col in range(3, LEN_COLS - 3):
+            res += _xmas_appears_number(row, col)
+    return res
 
 
 def main():
-    data = get_data("test_input")
-    # print(data)
+    data = get_data("input")
     extended_data = extend_data(data)
-    # print(converted_data)
     print(get_answer_1(extended_data))
 
 
