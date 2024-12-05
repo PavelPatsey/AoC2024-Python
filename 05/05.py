@@ -48,7 +48,7 @@ def get_answer(rules_dict: Dict[int, List[int]], updates: Tuple[int]) -> int:
 def _correct_update(
     rules_dict: Dict[int, List[int]],
     update: Tuple[int],
-) -> Tuple[int]:
+) -> List[int]:
     def _compare_updates(x, y):
         if y in rules_dict[x]:
             return -1
