@@ -1,29 +1,28 @@
 from collections import defaultdict
-from typing import Dict, Tuple
 from functools import cmp_to_key
+from typing import Dict, List, Tuple
 
 
-def get_data(input_file):
-    with open(input_file, "r") as file:
-        rules, updates = file.read().strip().split("\n\n")
-    rules = tuple(
-        map(
-            lambda x: (int(x[0]), int(x[1])),
-            map(lambda x: x.split("|"), rules.splitlines()),
+def get_rules_updates(input_file: str) -> Tuple[Dict[int, List[int]], Tuple[int]]:
+    def _get_rules_dict(rules_data):
+        def _get_rules(rule):
+            return tuple(map(int, rule.split("|")))
+
+        rules = map(lambda x: _get_rules(x), rules_data.splitlines())
+        rules_dict = defaultdict(list)
+        for k, v in rules:
+            rules_dict[k].append(v)
+        return dict(rules_dict)
+
+    def _get_updates(updates_data):
+        return tuple(
+            tuple(int(x) for x in line.split(",")) for line in updates_data.splitlines()
         )
-    )
-    updates = tuple(
-        tuple(int(x) for x in line.split(",")) for line in updates.splitlines()
-    )
 
-    return rules, updates
+    with open(input_file, "r") as file:
+        rules_data, updates_data = file.read().strip().split("\n\n")
 
-
-def get_rules_dict(rules: Tuple[int]) -> Dict[int, int]:
-    rules_dict = defaultdict(list)
-    for k, v in rules:
-        rules_dict[k].append(v)
-    return rules_dict
+    return _get_rules_dict(rules_data), _get_updates(updates_data)
 
 
 def lists_intersect(list1, list2):
@@ -66,10 +65,13 @@ def get_answer_2(rules_dict, updates):
 
 
 def main():
-    rules, updates = get_data("input")
-    rules_dict = get_rules_dict(rules)
+    rules_dict, updates = get_rules_updates("input")
+    print(rules_dict)
+    print(updates)
     print(get_answer(rules_dict, updates))
     print(get_answer_2(rules_dict, updates))
+    assert get_answer(rules_dict, updates) == 4135
+    assert get_answer_2(rules_dict, updates) == 5285
 
 
 if __name__ == "__main__":
