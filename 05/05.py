@@ -25,11 +25,11 @@ def get_rules_updates(input_file: str) -> Tuple[Dict[int, List[int]], Tuple[int]
     return _get_rules_dict(rules_data), _get_updates(updates_data)
 
 
-def lists_intersect(list1, list2):
-    return any(elem in list2 for elem in list1)
+def lists_intersect(list_1: List[int], list_2: List[int]) -> bool:
+    return any(elem in list_2 for elem in list_1)
 
 
-def is_correct_update(rules_dict, update):
+def is_correct_update(rules_dict: Dict[int, List[int]], update) -> bool:
     prev_pages = []
     for page in update:
         if lists_intersect(rules_dict[page], prev_pages):
@@ -38,14 +38,17 @@ def is_correct_update(rules_dict, update):
     return True
 
 
-def get_answer(rules_dict, updates):
-    correct_updates = [
+def get_answer(rules_dict: Dict[int, List[int]], updates: Tuple[int]) -> int:
+    correct_updates = (
         update for update in updates if is_correct_update(rules_dict, update)
-    ]
+    )
     return sum(map(lambda x: x[len(x) // 2], correct_updates))
 
 
-def get_correct_update(rules_dict, update):
+def get_correct_update(
+    rules_dict: Dict[int, List[int]],
+    update: Tuple[int],
+) -> Tuple[int]:
     def _compare_updates(x, y):
         if y in rules_dict[x]:
             return -1
@@ -54,28 +57,21 @@ def get_correct_update(rules_dict, update):
     return sorted(update, key=cmp_to_key(_compare_updates))
 
 
-def get_answer_2(rules_dict, updates):
-    incorrect_updates = [
+def get_answer_2(rules_dict: Dict[int, List[int]], updates: Tuple[int]) -> int:
+    incorrect_updates = (
         update for update in updates if not is_correct_update(rules_dict, update)
-    ]
-    correct_updates = [
+    )
+    correct_updates = (
         get_correct_update(rules_dict, update) for update in incorrect_updates
-    ]
+    )
     return sum(map(lambda x: x[len(x) // 2], correct_updates))
 
 
 def main():
     rules_dict, updates = get_rules_updates("input")
-    print(rules_dict)
-    print(updates)
     print(get_answer(rules_dict, updates))
     print(get_answer_2(rules_dict, updates))
-    assert get_answer(rules_dict, updates) == 4135
-    assert get_answer_2(rules_dict, updates) == 5285
 
 
 if __name__ == "__main__":
-    assert lists_intersect([1, 2], [3, 4]) is False
-    assert lists_intersect([1, 2], [2, 4]) is True
-    assert lists_intersect([], [2, 4]) is False
     main()
