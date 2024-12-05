@@ -45,7 +45,7 @@ def get_answer(rules_dict: Dict[int, List[int]], updates: Tuple[int]) -> int:
     return sum(map(lambda x: x[len(x) // 2], correct_updates))
 
 
-def _correct_update(
+def correct_update(
     rules_dict: Dict[int, List[int]],
     update: Tuple[int],
 ) -> List[int]:
@@ -62,7 +62,7 @@ def get_answer_2(rules_dict: Dict[int, List[int]], updates: Tuple[int]) -> int:
         update for update in updates if not is_correct_update(rules_dict, update)
     )
     correct_updates = (
-        _correct_update(rules_dict, update) for update in incorrect_updates
+        correct_update(rules_dict, update) for update in incorrect_updates
     )
     return sum(map(lambda x: x[len(x) // 2], correct_updates))
 
