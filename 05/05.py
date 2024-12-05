@@ -18,27 +18,45 @@ def get_data(input_file):
     return rules, updates
 
 
-def get_parents(rules: Tuple[int]) -> Dict[int, int]:
-    parents = defaultdict(list)
+def get_rules_dict(rules: Tuple[int]) -> Dict[int, int]:
+    rules_dict = defaultdict(list)
     for k, v in rules:
-        parents[v].append(k)
-    return parents
-
-    pass
+        rules_dict[k].append(v)
+    return rules_dict
 
 
-def get_answer(data):
-    return
+def lists_intersect(list1, list2):
+    return any(elem in list2 for elem in list1)
+
+
+def is_correct_update(rules_dict, update):
+    prev_pages = []
+    for page in update:
+        if lists_intersect(rules_dict[page], prev_pages):
+            return False
+        prev_pages.append(page)
+    return True
+
+
+def get_answer(rules_dict, updates):
+    correct_updates = [
+        update for update in updates if is_correct_update(rules_dict, update)
+    ]
+    return sum(map(lambda x: x[len(x) // 2], correct_updates))
 
 
 def main():
-    rules, updates = get_data("test_input")
+    rules, updates = get_data("input")
     print(rules)
     print(updates)
-    parents = get_parents(rules)
-    print(parents)
-    # print(get_answer(data))
+    rules_dict = get_rules_dict(rules)
+    print(rules_dict)
+    print()
+    print(get_answer(rules_dict, updates))
 
 
 if __name__ == "__main__":
+    assert lists_intersect([1, 2], [3, 4]) is False
+    assert lists_intersect([1, 2], [2, 4]) is True
+    assert lists_intersect([], [2, 4]) is False
     main()
