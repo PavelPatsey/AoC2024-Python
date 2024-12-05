@@ -3,7 +3,7 @@ from functools import cmp_to_key
 from typing import Dict, List, Tuple
 
 
-def get_rules_updates(input_file: str) -> Tuple[Dict[int, List[int]], Tuple[int]]:
+def get_rules_updates(input_file: str) -> Tuple[Dict, Tuple]:
     def _get_rules_dict(rules_data):
         def _get_rules(rule):
             return tuple(map(int, rule.split("|")))
@@ -25,11 +25,11 @@ def get_rules_updates(input_file: str) -> Tuple[Dict[int, List[int]], Tuple[int]
     return _get_rules_dict(rules_data), _get_updates(updates_data)
 
 
-def lists_intersect(list_1: List[int], list_2: List[int]) -> bool:
+def lists_intersect(list_1, list_2) -> bool:
     return any(elem in list_2 for elem in list_1)
 
 
-def is_correct_update(rules_dict: Dict[int, List[int]], update) -> bool:
+def is_correct_update(rules_dict: Dict, update: Tuple) -> bool:
     prev_pages = []
     for page in update:
         if lists_intersect(rules_dict[page], prev_pages):
@@ -38,14 +38,14 @@ def is_correct_update(rules_dict: Dict[int, List[int]], update) -> bool:
     return True
 
 
-def get_answer(rules_dict: Dict[int, List[int]], updates: Tuple[int]) -> int:
+def get_answer(rules_dict: Dict, updates: Tuple) -> int:
     correct_updates = (
         update for update in updates if is_correct_update(rules_dict, update)
     )
     return sum(map(lambda x: x[len(x) // 2], correct_updates))
 
 
-def correct_update(rules_dict: Dict[int, List[int]], update: Tuple[int]) -> List[int]:
+def correct_update(rules_dict: Dict, update: Tuple) -> List:
     def _compare_updates(x, y):
         if y in rules_dict[x]:
             return -1
@@ -54,7 +54,7 @@ def correct_update(rules_dict: Dict[int, List[int]], update: Tuple[int]) -> List
     return sorted(update, key=cmp_to_key(_compare_updates))
 
 
-def get_answer_2(rules_dict: Dict[int, List[int]], updates: Tuple[int]) -> int:
+def get_answer_2(rules_dict: Dict, updates: Tuple) -> int:
     incorrect_updates = (
         update for update in updates if not is_correct_update(rules_dict, update)
     )
