@@ -1,5 +1,6 @@
 from collections import defaultdict
 from typing import Dict, Tuple
+from functools import cmp_to_key
 
 
 def get_data(input_file):
@@ -45,14 +46,30 @@ def get_answer(rules_dict, updates):
     return sum(map(lambda x: x[len(x) // 2], correct_updates))
 
 
+def get_correct_update(rules_dict, update):
+    def _compare_updates(x, y):
+        if y in rules_dict[x]:
+            return -1
+        return 1
+
+    return sorted(update, key=cmp_to_key(_compare_updates))
+
+
+def get_answer_2(rules_dict, updates):
+    incorrect_updates = [
+        update for update in updates if not is_correct_update(rules_dict, update)
+    ]
+    correct_updates = [
+        get_correct_update(rules_dict, update) for update in incorrect_updates
+    ]
+    return sum(map(lambda x: x[len(x) // 2], correct_updates))
+
+
 def main():
     rules, updates = get_data("input")
-    print(rules)
-    print(updates)
     rules_dict = get_rules_dict(rules)
-    print(rules_dict)
-    print()
     print(get_answer(rules_dict, updates))
+    print(get_answer_2(rules_dict, updates))
 
 
 if __name__ == "__main__":
