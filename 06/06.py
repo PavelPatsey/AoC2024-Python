@@ -1,9 +1,4 @@
-DIRS = {
-    "UP": (-1, 0),
-    "DOWN": (1, 0),
-    "LEFT": (0, -1),
-    "RIGHT": (0, 1),
-}
+UP = (-1, 0)
 
 
 def rotate(dir):
@@ -13,20 +8,17 @@ def rotate(dir):
 def get_matrix(input_file):
     with open(input_file, "r") as file:
         data = file.read().splitlines()
-    matrix = [[x for x in row] for row in data]
-    return matrix
+    return [[x for x in row] for row in data]
 
 
 def get_start(matrix):
     ROWS = len(matrix)
     COLS = len(matrix[0])
-    start = None
     for r in range(ROWS):
         for c in range(COLS):
             if matrix[r][c] == "^":
-                start = r, c
-                break
-    return start
+                return r, c
+    return
 
 
 def get_answer(matrix):
@@ -34,9 +26,8 @@ def get_answer(matrix):
     COLS = len(matrix[0])
     start = get_start(matrix)
     r, c = start
-    visited = set()
-    visited.add(start)
-    dir = DIRS["UP"]
+    visited = {start}
+    dir = UP
     while 0 < r < ROWS - 1 and 0 < c < COLS - 1:
         new = r + dir[0], c + dir[1]
         while matrix[new[0]][new[1]] == "#":
@@ -50,12 +41,10 @@ def get_answer(matrix):
 def is_loop(matrix, start, obst):
     ROWS = len(matrix)
     COLS = len(matrix[0])
-    dir = DIRS["UP"]
+    dir = UP
     r, c = start
-    visited = set()
-    visited.add(start)
-    visited_loop = set()
-    visited_loop.add((start, dir))
+    visited = {start}
+    visited_loop = {(start, dir)}
     while 0 < r < ROWS - 1 and 0 < c < COLS - 1:
         new = r + dir[0], c + dir[1]
         while matrix[new[0]][new[1]] == "#" or new == obst:
