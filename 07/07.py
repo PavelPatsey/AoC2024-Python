@@ -12,13 +12,13 @@ def get_rules(input_file):
 
 def is_possible(rule):
 
-    def _is_possible(value, numbers, i, summa):
-        if summa > value:
+    def _is_possible(value, numbers, i, acc):
+        if acc > value:
             return False
         if i == len(numbers) - 1:
-            return value == summa
-        a = summa + numbers[i + 1]
-        b = summa * numbers[i + 1]
+            return value == acc
+        a = acc + numbers[i + 1]
+        b = acc * numbers[i + 1]
         return any(
             (
                 _is_possible(value, numbers, i + 1, a),
@@ -32,14 +32,14 @@ def is_possible(rule):
 
 def is_possible_2(rule):
 
-    def _is_possible_2(value, numbers, i, summa):
-        if summa > value:
+    def _is_possible_2(value, numbers, i, acc):
+        if acc > value:
             return False
         if i == len(numbers) - 1:
-            return value == summa
-        a = summa + numbers[i + 1]
-        b = summa * numbers[i + 1]
-        c = int(str(summa) + str(numbers[i + 1]))
+            return value == acc
+        a = acc + numbers[i + 1]
+        b = acc * numbers[i + 1]
+        c = int(str(acc) + str(numbers[i + 1]))
         return any(
             (
                 _is_possible_2(value, numbers, i + 1, a),
@@ -65,7 +65,6 @@ def get_answer(rules):
 
 def main():
     rules = get_rules("input")
-    print(rules)
     print(get_answer(rules))
 
 
