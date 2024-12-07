@@ -1,3 +1,6 @@
+import time
+
+
 def get_rules(input_file):
     with open(input_file, "r") as file:
         data = file.read().splitlines()
@@ -17,12 +20,10 @@ def is_possible(rule):
             return False
         if i == len(numbers) - 1:
             return value == acc
-        a = acc + numbers[i + 1]
-        b = acc * numbers[i + 1]
         return any(
             (
-                _is_possible(value, numbers, i + 1, a),
-                _is_possible(value, numbers, i + 1, b),
+                _is_possible(value, numbers, i + 1, acc + numbers[i + 1]),
+                _is_possible(value, numbers, i + 1, acc * numbers[i + 1]),
             )
         )
 
@@ -37,14 +38,13 @@ def is_possible_2(rule):
             return False
         if i == len(numbers) - 1:
             return value == acc
-        a = acc + numbers[i + 1]
-        b = acc * numbers[i + 1]
-        c = int(str(acc) + str(numbers[i + 1]))
         return any(
             (
-                _is_possible_2(value, numbers, i + 1, a),
-                _is_possible_2(value, numbers, i + 1, b),
-                _is_possible_2(value, numbers, i + 1, c),
+                _is_possible_2(value, numbers, i + 1, acc + numbers[i + 1]),
+                _is_possible_2(value, numbers, i + 1, acc * numbers[i + 1]),
+                _is_possible_2(
+                    value, numbers, i + 1, int(str(acc) + str(numbers[i + 1]))
+                ),
             )
         )
 
@@ -71,4 +71,8 @@ def main():
 if __name__ == "__main__":
     assert is_possible((190, (10, 19))) is True
     assert is_possible((83, (17, 5))) is False
+    start = time.time()
     main()
+    end = time.time()
+    dt = end - start
+    print(f"{dt=}")
