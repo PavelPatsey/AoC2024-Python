@@ -13,6 +13,8 @@ def get_rules(input_file):
 def is_possible(rule):
 
     def _is_possible(value, numbers, i, summa):
+        if summa > value:
+            return False
         if i == len(numbers) - 1:
             return value == summa
         a = summa + numbers[i + 1]
@@ -31,6 +33,8 @@ def is_possible(rule):
 def is_possible_2(rule):
 
     def _is_possible_2(value, numbers, i, summa):
+        if summa > value:
+            return False
         if i == len(numbers) - 1:
             return value == summa
         a = summa + numbers[i + 1]
