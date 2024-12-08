@@ -27,6 +27,11 @@ def get_antinodes(coord_1, coord_2):
     return (x1 - dx, y1 - dy), (x2 + dx, y2 + dy)
 
 
+def in_matrix(coord, ROWS, COLS):
+    r, c = coord
+    return 0 <= r <= ROWS - 1 and 0 <= c <= COLS - 1
+
+
 def get_answer(matrix, ants_coords):
     ROWS = len(matrix)
     COLS = len(matrix[0])
@@ -35,17 +40,59 @@ def get_answer(matrix, ants_coords):
         coord_pairs = list(combinations(v, 2))
         for coord_1, coord_2 in coord_pairs:
             for ant in get_antinodes(coord_1, coord_2):
-                r, c = ant
-                if 0 <= r <= ROWS - 1 and 0 <= c <= COLS - 1:
+                if in_matrix(ant, ROWS, COLS):
                     antinodes.add(ant)
 
     return len(antinodes)
 
 
+def get_antinodes_2(coord_1, coord_2, ROWS, COLS):
+    antinodes = set()
+    r1, c1 = coord_1
+    r2, c2 = coord_2
+    dr = r2 - r1
+    dc = c2 - c1
+
+    i = 1
+    new_r1 = r1 - i * dr
+    new_c1 = c1 - i * dc
+    while in_matrix((new_r1, new_c1), ROWS, COLS):
+        antinodes.add((new_r1, new_c1))
+        i += 1
+        new_r1 = r1 - i * dr
+        new_c1 = c1 - i * dc
+
+    i = 1
+    new_r2 = r2 + i * dr
+    new_c2 = c2 + i * dc
+    while in_matrix((new_r2, new_c2), ROWS, COLS):
+        antinodes.add((new_r2, new_c2))
+        i += 1
+        new_r2 = r2 + i * dr
+        new_c2 = c2 + i * dc
+
+    return antinodes
+
+
+def get_answer_2(matrix, ants_coords):
+    ROWS = len(matrix)
+    COLS = len(matrix[0])
+    antinodes = set()
+    for k, v in ants_coords.items():
+        coord_pairs = list(combinations(v, 2))
+        for coord_1, coord_2 in coord_pairs:
+            s = get_antinodes_2(coord_1, coord_2, ROWS, COLS)
+            print(f"{coord_1=}, {coord_2=}, {s=}")
+            antinodes.update(s)
+
+    return len(antinodes)
+
+
 def main():
-    matrix = get_matrix("input")
+    matrix = get_matrix("test_input")
     antennas_coordinates = get_antennas_coordinates(matrix)
     print(get_answer(matrix, antennas_coordinates))
+    print(get_answer_2(matrix, antennas_coordinates))
 
 
 if __name__ == "__main__":
