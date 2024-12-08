@@ -19,21 +19,23 @@ def get_antennas_coordinates(matrix):
     return antennas_coordinates
 
 
-def in_matrix(coord, rows, cols):
-    r, c = coord
-    return 0 <= r <= rows - 1 and 0 <= c <= cols - 1
+def in_matrix(node, rows, cols):
+    r, c = node
+    return 0 <= r < rows and 0 <= c < cols
 
 
-def get_antinodes(ant_1, ant_2, rows, cols):
-    x1, y1 = ant_1
-    x2, y2 = ant_2
+def get_antinodes(node_1, node_2, rows, cols):
+    x1, y1 = node_1
+    x2, y2 = node_2
     dx = x2 - x1
     dy = y2 - y1
     antinodes = set()
-    if in_matrix((x1 - dx, y1 - dy), rows, cols):
-        antinodes.add((x1 - dx, y1 - dy))
-    if in_matrix((x2 + dx, y2 + dy), rows, cols):
-        antinodes.add((x2 + dx, y2 + dy))
+    new_node_1 = x1 - dx, y1 - dy
+    if in_matrix(new_node_1, rows, cols):
+        antinodes.add(new_node_1)
+    new_node_2 = x2 + dx, y2 + dy
+    if in_matrix(new_node_2, rows, cols):
+        antinodes.add(new_node_2)
     return antinodes
 
 
@@ -42,16 +44,16 @@ def get_answer(matrix, ants_coords):
     COLS = len(matrix[0])
     antinodes = set()
     for v in ants_coords.values():
-        for ant_1, ant_2 in combinations(v, 2):
-            antinodes.update(get_antinodes(ant_1, ant_2, ROWS, COLS))
+        for node_1, node_2 in combinations(v, 2):
+            antinodes.update(get_antinodes(node_1, node_2, ROWS, COLS))
 
     return len(antinodes)
 
 
-def get_antinodes_2(ant_1, ant_2, rows, cols):
+def get_antinodes_2(node_1, node_2, rows, cols):
     antinodes = set()
-    r1, c1 = ant_1
-    r2, c2 = ant_2
+    r1, c1 = node_1
+    r2, c2 = node_2
     dr = r2 - r1
     dc = c2 - c1
 
@@ -81,10 +83,10 @@ def get_answer_2(matrix, ants_coords):
     COLS = len(matrix[0])
     antinodes = set()
     for v in ants_coords.values():
-        for ant_1, ant_2 in combinations(v, 2):
-            antinodes.add(ant_1)
-            antinodes.add(ant_2)
-            antinodes.update(get_antinodes_2(ant_1, ant_2, ROWS, COLS))
+        for node_1, node_2 in combinations(v, 2):
+            antinodes.add(node_1)
+            antinodes.add(node_2)
+            antinodes.update(get_antinodes_2(node_1, node_2, ROWS, COLS))
 
     return len(antinodes)
 
