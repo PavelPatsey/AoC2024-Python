@@ -81,15 +81,16 @@ def get_answer_2(matrix, ants_coords):
     for k, v in ants_coords.items():
         coord_pairs = list(combinations(v, 2))
         for coord_1, coord_2 in coord_pairs:
+            antinodes.add(coord_1)
+            antinodes.add(coord_2)
             s = get_antinodes_2(coord_1, coord_2, ROWS, COLS)
-            print(f"{coord_1=}, {coord_2=}, {s=}")
             antinodes.update(s)
 
     return len(antinodes)
 
 
 def main():
-    matrix = get_matrix("test_input")
+    matrix = get_matrix("input")
     antennas_coordinates = get_antennas_coordinates(matrix)
     print(get_answer(matrix, antennas_coordinates))
     print(get_answer_2(matrix, antennas_coordinates))
