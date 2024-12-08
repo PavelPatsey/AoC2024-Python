@@ -24,39 +24,41 @@ def in_matrix(coord, rows, cols):
     return 0 <= r <= rows - 1 and 0 <= c <= cols - 1
 
 
-def get_antinodes(coord_1, coord_2):
-    x1, y1 = coord_1
-    x2, y2 = coord_2
+def get_antinodes(ant_1, ant_2, rows, cols):
+    x1, y1 = ant_1
+    x2, y2 = ant_2
     dx = x2 - x1
     dy = y2 - y1
-    return (x1 - dx, y1 - dy), (x2 + dx, y2 + dy)
+    antinodes = set()
+    if in_matrix((x1 - dx, y1 - dy), rows, cols):
+        antinodes.add((x1 - dx, y1 - dy))
+    if in_matrix((x2 + dx, y2 + dy), rows, cols):
+        antinodes.add((x2 + dx, y2 + dy))
+    return antinodes
 
 
 def get_answer(matrix, ants_coords):
     ROWS = len(matrix)
     COLS = len(matrix[0])
     antinodes = set()
-    for k, v in ants_coords.items():
-        coord_pairs = list(combinations(v, 2))
-        for coord_1, coord_2 in coord_pairs:
-            for ant in get_antinodes(coord_1, coord_2):
-                if in_matrix(ant, ROWS, COLS):
-                    antinodes.add(ant)
+    for v in ants_coords.values():
+        for ant_1, ant_2 in combinations(v, 2):
+            antinodes.update(get_antinodes(ant_1, ant_2, ROWS, COLS))
 
     return len(antinodes)
 
 
-def get_antinodes_2(coord_1, coord_2, ROWS, COLS):
+def get_antinodes_2(ant_1, ant_2, rows, cols):
     antinodes = set()
-    r1, c1 = coord_1
-    r2, c2 = coord_2
+    r1, c1 = ant_1
+    r2, c2 = ant_2
     dr = r2 - r1
     dc = c2 - c1
 
     i = 1
     new_r1 = r1 - i * dr
     new_c1 = c1 - i * dc
-    while in_matrix((new_r1, new_c1), ROWS, COLS):
+    while in_matrix((new_r1, new_c1), rows, cols):
         antinodes.add((new_r1, new_c1))
         i += 1
         new_r1 = r1 - i * dr
@@ -65,7 +67,7 @@ def get_antinodes_2(coord_1, coord_2, ROWS, COLS):
     i = 1
     new_r2 = r2 + i * dr
     new_c2 = c2 + i * dc
-    while in_matrix((new_r2, new_c2), ROWS, COLS):
+    while in_matrix((new_r2, new_c2), rows, cols):
         antinodes.add((new_r2, new_c2))
         i += 1
         new_r2 = r2 + i * dr
@@ -78,13 +80,11 @@ def get_answer_2(matrix, ants_coords):
     ROWS = len(matrix)
     COLS = len(matrix[0])
     antinodes = set()
-    for k, v in ants_coords.items():
-        coord_pairs = list(combinations(v, 2))
-        for coord_1, coord_2 in coord_pairs:
-            antinodes.add(coord_1)
-            antinodes.add(coord_2)
-            s = get_antinodes_2(coord_1, coord_2, ROWS, COLS)
-            antinodes.update(s)
+    for v in ants_coords.values():
+        for ant_1, ant_2 in combinations(v, 2):
+            antinodes.add(ant_1)
+            antinodes.add(ant_2)
+            antinodes.update(get_antinodes_2(ant_1, ant_2, ROWS, COLS))
 
     return len(antinodes)
 
@@ -97,5 +97,4 @@ def main():
 
 
 if __name__ == "__main__":
-    assert get_antinodes((1, 8), (2, 5)) == ((0, 11), (3, 2))
     main()
