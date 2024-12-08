@@ -19,17 +19,17 @@ def get_antennas_coordinates(matrix):
     return antennas_coordinates
 
 
+def in_matrix(coord, rows, cols):
+    r, c = coord
+    return 0 <= r <= rows - 1 and 0 <= c <= cols - 1
+
+
 def get_antinodes(coord_1, coord_2):
     x1, y1 = coord_1
     x2, y2 = coord_2
     dx = x2 - x1
     dy = y2 - y1
     return (x1 - dx, y1 - dy), (x2 + dx, y2 + dy)
-
-
-def in_matrix(coord, ROWS, COLS):
-    r, c = coord
-    return 0 <= r <= ROWS - 1 and 0 <= c <= COLS - 1
 
 
 def get_answer(matrix, ants_coords):
