@@ -83,11 +83,7 @@ def get_answer_2(disk_map):
                 dl = get_dl(blocks, l)
         r -= dr
 
-    res = 0
-    for i, x in enumerate(blocks):
-        if x != ".":
-            res += i * x
-    return res
+    return sum(map(lambda x: x[0] * x[1] if x[1] != "." else 0, enumerate(blocks)))
 
 
 def main():
