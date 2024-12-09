@@ -1,3 +1,6 @@
+import time
+
+
 def get_disk_map(input_file):
     with open(input_file, "r") as file:
         data = file.read().strip()
@@ -89,7 +92,12 @@ def get_answer_2(disk_map):
 def main():
     disk_map = get_disk_map("input")
     print(get_answer(disk_map))
+    t1 = time.time()
     print(get_answer_2(disk_map))
+    t2 = time.time()
+    dt = t2 - t1
+    dt_str = "{:.2f}".format(dt)
+    print("dt =", dt_str, "sec")
 
 
 if __name__ == "__main__":
