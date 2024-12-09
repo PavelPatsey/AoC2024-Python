@@ -35,11 +35,7 @@ def get_answer(disk_map):
     return sum(mapped)
 
 
-def get_l(blocks, ind=None):
-    if ind:
-        l = ind
-    else:
-        l = 0
+def get_l(blocks, l=0):
     while blocks[l] != ".":
         l += 1
     return l
@@ -53,10 +49,7 @@ def get_dl(blocks, l):
 
 
 def get_r(blocks, ind=None):
-    if ind:
-        r = ind
-    else:
-        r = len(blocks) - 1
+    r = ind if ind else len(blocks) - 1
     while blocks[r] == ".":
         r -= 1
     return r
@@ -77,13 +70,13 @@ def get_answer_2(disk_map):
         dl = get_dl(blocks, l)
         r = get_r(blocks, r)
         dr = get_dr(blocks, r)
-        are_swapped = False
-        while l < r and not are_swapped:
+        is_swapped = False
+        while l < r and not is_swapped:
             if dl >= dr:
                 for i in range(dr):
                     blocks[l + i], blocks[r - i] = blocks[r - i], blocks[l + i]
                 l += dr
-                are_swapped = True
+                is_swapped = True
             else:
                 l += dl
                 l = get_l(blocks, l)
