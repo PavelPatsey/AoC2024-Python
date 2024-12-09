@@ -33,9 +33,7 @@ def get_answer(disk_map):
                 r -= 1
         l += 1
 
-    filtered = filter(lambda x: x != ".", blocks)
-    mapped = map(lambda x: x[0] * x[1], enumerate(filtered))
-    return sum(mapped)
+    return sum(map(lambda x: x[0] * x[1] if x[1] != "." else 0, enumerate(blocks)))
 
 
 def get_l(blocks, l=0):
