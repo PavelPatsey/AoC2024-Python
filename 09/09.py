@@ -4,8 +4,7 @@ import time
 def get_disk_map(input_file):
     with open(input_file, "r") as file:
         data = file.read().strip()
-    data = [int(x) for x in data]
-    return data
+    return [int(x) for x in data]
 
 
 def get_blocks(disk_map):
