@@ -35,9 +35,72 @@ def get_answer(disk_map):
     return sum(mapped)
 
 
+def get_l(blocks, ind=None):
+    if ind:
+        l = ind
+    else:
+        l = 0
+    while blocks[l] != ".":
+        l += 1
+    return l
+
+
+def get_dl(blocks, l):
+    dl = 0
+    while l + dl < len(blocks) and blocks[l + dl] == ".":
+        dl += 1
+    return dl
+
+
+def get_r(blocks, ind=None):
+    if ind:
+        r = ind
+    else:
+        r = len(blocks) - 1
+    while blocks[r] == ".":
+        r -= 1
+    return r
+
+
+def get_dr(blocks, r):
+    dr = 0
+    while blocks[r - dr] == blocks[r]:
+        dr += 1
+    return dr
+
+
+def get_answer_2(disk_map):
+    blocks = get_blocks(disk_map)
+    r = get_r(blocks)
+    while r > 0:
+        l = get_l(blocks)
+        dl = get_dl(blocks, l)
+        r = get_r(blocks, r)
+        dr = get_dr(blocks, r)
+        are_swapped = False
+        while l < r and not are_swapped:
+            if dl >= dr:
+                for i in range(dr):
+                    blocks[l + i], blocks[r - i] = blocks[r - i], blocks[l + i]
+                l += dr
+                are_swapped = True
+            else:
+                l += dl
+                l = get_l(blocks, l)
+                dl = get_dl(blocks, l)
+        r -= dr
+
+    res = 0
+    for i, x in enumerate(blocks):
+        if x != ".":
+            res += i * x
+    return res
+
+
 def main():
     disk_map = get_disk_map("input")
     print(get_answer(disk_map))
+    print(get_answer_2(disk_map))
 
 
 if __name__ == "__main__":
