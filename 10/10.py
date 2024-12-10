@@ -47,14 +47,8 @@ def get_score(grid, start):
             peaks.add(node)
             return
 
-        for new_dir in DIRS4:
-            dr, dc = new_dir
-            new_r = r + dr
-            new_c = c + dc
-            visited_node = r, c
-            new_visited = visited | {visited_node}
-            value = grid[r][c]
-            dfs(new_r, new_c, value, new_visited)
+        for dr, dc in DIRS4:
+            dfs(r + dr, c + dc, grid[r][c], visited | {(r, c)})
 
     dfs(start[0], start[1], -1, set())
     return len(peaks)
@@ -75,14 +69,8 @@ def get_score_2(grid, start):
             peaks[node] += 1
             return
 
-        for new_dir in DIRS4:
-            dr, dc = new_dir
-            new_r = r + dr
-            new_c = c + dc
-            visited_node = r, c
-            new_visited = visited | {visited_node}
-            value = grid[r][c]
-            dfs(new_r, new_c, value, new_visited)
+        for dr, dc in DIRS4:
+            dfs(r + dr, c + dc, grid[r][c], visited | {(r, c)})
 
     dfs(start[0], start[1], -1, set())
     return sum(peaks.values())
