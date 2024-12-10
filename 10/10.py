@@ -43,8 +43,7 @@ def get_score(grid, start):
         if grid[r][c] != prev_value + 1:
             return
         if grid[r][c] == 9:
-            node = r, c
-            peaks.add(node)
+            peaks.add((r, c))
             return
 
         for dr, dc in DIRS4:
@@ -65,8 +64,7 @@ def get_score_2(grid, start):
         if grid[r][c] != prev_value + 1:
             return
         if grid[r][c] == 9:
-            node = r, c
-            peaks[node] += 1
+            peaks[(r, c)] += 1
             return
 
         for dr, dc in DIRS4:
