@@ -77,8 +77,8 @@ def get_score_2(grid, start):
 def main():
     grid = get_grid("input")
     starts = get_starts(grid)
-    print(sum(get_score(grid, node) for node in starts))
-    print(sum(get_score_2(grid, node) for node in starts))
+    print(sum(map(lambda x: get_score(grid, x), starts)))
+    print(sum(map(lambda x: get_score_2(grid, x), starts)))
 
 
 if __name__ == "__main__":
