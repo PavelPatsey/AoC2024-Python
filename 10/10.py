@@ -50,9 +50,7 @@ def get_score(grid, start):
             new_r = r + dr
             new_c = c + dc
             visited_node = r, c
-            # new_visited = visited | {visited_node}
-            new_visited = {x for x in visited}
-            new_visited.add(visited_node)
+            new_visited = visited | {visited_node}
             value = grid[r][c]
             dfs(new_r, new_c, value, new_visited)
 
