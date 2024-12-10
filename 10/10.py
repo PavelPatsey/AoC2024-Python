@@ -5,14 +5,26 @@ def get_grid(input_file):
     return grid
 
 
+def get_starts(grid):
+    rows = len(grid)
+    cols = len(grid[0])
+    starts = set()
+    for r in range(rows):
+        for c in range(cols):
+            if grid[r][c] == 0:
+                starts.add((r, c))
+    return starts
+
+
 def get_answer(grid):
-    return
+    starts = get_starts(grid)
+    print(starts)
 
 
 def main():
     grid = get_grid("test_input_1")
     print(grid)
-    # print(get_answer(data))
+    print(get_answer(grid))
 
 
 if __name__ == "__main__":
