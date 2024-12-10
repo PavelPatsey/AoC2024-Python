@@ -25,3 +25,9 @@ DIRS = {
 
 def rotate(dir):
     return dir[0], -dir[1]
+
+
+def in_grid(r, c, grid):
+    rows = len(grid)
+    cols = len(grid[0])
+    return 0 <= r < rows and 0 <= c < cols
