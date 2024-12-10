@@ -35,10 +35,8 @@ def in_grid(r, c, grid):
 def get_score(grid, start):
     peaks = set()
 
-    def dfs(r, c, prev_value, visited):
+    def dfs(r, c, prev_value):
         if not in_grid(r, c, grid):
-            return
-        if (r, c) in visited:
             return
         if grid[r][c] != prev_value + 1:
             return
@@ -47,19 +45,17 @@ def get_score(grid, start):
             return
 
         for dr, dc in DIRS4:
-            dfs(r + dr, c + dc, grid[r][c], visited | {(r, c)})
+            dfs(r + dr, c + dc, grid[r][c])
 
-    dfs(start[0], start[1], -1, set())
+    dfs(start[0], start[1], -1)
     return len(peaks)
 
 
 def get_score_2(grid, start):
     peaks = defaultdict(int)
 
-    def dfs(r, c, prev_value, visited):
+    def dfs(r, c, prev_value):
         if not in_grid(r, c, grid):
-            return
-        if (r, c) in visited:
             return
         if grid[r][c] != prev_value + 1:
             return
@@ -68,9 +64,9 @@ def get_score_2(grid, start):
             return
 
         for dr, dc in DIRS4:
-            dfs(r + dr, c + dc, grid[r][c], visited | {(r, c)})
+            dfs(r + dr, c + dc, grid[r][c])
 
-    dfs(start[0], start[1], -1, set())
+    dfs(start[0], start[1], -1)
     return sum(peaks.values())
 
 
