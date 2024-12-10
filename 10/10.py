@@ -1,9 +1,9 @@
-DIRS4 = {
+DIRS4 = (
     (0, -1),
     (0, 1),
     (-1, 0),
     (1, 0),
-}
+)
 
 
 def get_grid(input_file):
@@ -16,12 +16,12 @@ def get_grid(input_file):
 def get_starts(grid):
     rows = len(grid)
     cols = len(grid[0])
-    starts = set()
+    starts = []
     for r in range(rows):
         for c in range(cols):
             if grid[r][c] == 0:
-                starts.add((r, c))
-    return starts
+                starts.append((r, c))
+    return tuple(starts)
 
 
 def in_grid(r, c, grid):
@@ -30,44 +30,40 @@ def in_grid(r, c, grid):
     return 0 <= r < rows and 0 <= c < cols
 
 
-def dfs(grid, r, c, prev_value, visited):
-    if not in_grid(r, c, grid):
-        return 0
-    if (r, c) in visited:
-        return 0
-    if grid[r][c] != prev_value + 1:
-        return 0
-    if grid[r][c] == 9:
-        return 1
+def get_score(grid, start):
+    peaks = set()
 
-    res = 0
-    for new_dir in DIRS4:
-        dr, dc = new_dir
-        new_r = r + dr
-        new_c = c + dc
-        visited_node = r, c
-        new_visited = visited | {visited_node}
-        value = grid[r][c]
-        res += dfs(grid, new_r, new_c, value, new_visited)
+    def dfs(r, c, prev_value, visited):
+        if not in_grid(r, c, grid):
+            return
+        if (r, c) in visited:
+            return
+        if grid[r][c] != prev_value + 1:
+            return
+        if grid[r][c] == 9:
+            node = r, c
+            peaks.add(node)
+            return
 
-    return res
+        for new_dir in DIRS4:
+            dr, dc = new_dir
+            new_r = r + dr
+            new_c = c + dc
+            visited_node = r, c
+            # new_visited = visited | {visited_node}
+            new_visited = {x for x in visited}
+            new_visited.add(visited_node)
+            value = grid[r][c]
+            dfs(new_r, new_c, value, new_visited)
 
-
-def get_answer(grid):
-    starts = get_starts(grid)
-    print(f"{starts=}")
-
-    for node in starts:
-        r, c = node
-        score = dfs(grid, r, c, -1, set())
-        print(f"{score=}")
-    return
+    dfs(start[0], start[1], -1, set())
+    return len(peaks)
 
 
 def main():
-    grid = get_grid("test_input_2")
-    print(grid)
-    print(get_answer(grid))
+    grid = get_grid("input")
+    starts = get_starts(grid)
+    print(sum(get_score(grid, node) for node in starts))
 
 
 if __name__ == "__main__":
