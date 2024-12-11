@@ -1,3 +1,5 @@
+from functools import reduce
+
 DIRS8 = (
     (-1, -1),
     (-1, 0),
@@ -28,6 +30,11 @@ DIRS = {
     "LEFT": (0, -1),
     "RIGHT": (0, 1),
 }
+
+
+lst = ["a", "b", "c", "d", "e"]
+length = reduce(lambda acc, x: acc + 1, lst, 0)
+print(length)
 
 
 def rotate(dir):
