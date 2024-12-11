@@ -46,10 +46,7 @@ def get_answer_2(stones, n):
         else:
             return recursion(stone * 2024, steps - 1)
 
-    res = 0
-    for s in stones:
-        res += recursion(s, n)
-    return res
+    return sum(map(lambda x: recursion(x, n), stones))
 
 
 def main():
