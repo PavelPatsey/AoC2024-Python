@@ -1,5 +1,5 @@
 import itertools
-from functools import cache
+from functools import cache, reduce
 
 
 def get_stones(input_file):
@@ -11,23 +11,23 @@ def get_stones(input_file):
 
 def convert(stone):
     if stone == 0:
-        return [1]
+        yield 1
     elif len(str(stone)) % 2 == 0:
         stone_str = str(stone)
         l = len(stone_str)
-        return [int(stone_str[0 : l // 2]), int(stone_str[l // 2 :])]
+        yield int(stone_str[0 : l // 2])
+        yield int(stone_str[l // 2 :])
     else:
-        return [stone * 2024]
+        yield stone * 2024
 
 
 def get_answer(stones, n):
-    N = n
     converted_stones = stones
-    for i in range(N):
-        s = map(convert, converted_stones)
-        converted_stones = itertools.chain.from_iterable(s)
+    for _ in range(n):
+        mapped = map(convert, converted_stones)
+        converted_stones = itertools.chain.from_iterable(mapped)
 
-    return len(list(converted_stones))
+    return reduce((lambda x, acc: x + acc), converted_stones, 0)
 
 
 def get_answer_2(stones, n):
