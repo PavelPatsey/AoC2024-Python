@@ -33,22 +33,22 @@ def get_answer(stones, n):
 def get_answer_2(stones, n):
 
     @cache
-    def backtrack(stone, steps):
+    def recursion(stone, steps):
         if steps == 0:
             return 1
         if stone == 0:
-            return backtrack(1, steps - 1)
+            return recursion(1, steps - 1)
         elif len(str(stone)) % 2 == 0:
             stone_str = str(stone)
             l = len(stone_str)
             left, right = int(stone_str[0 : l // 2]), int(stone_str[l // 2 :])
-            return backtrack(left, steps - 1) + backtrack(right, steps - 1)
+            return recursion(left, steps - 1) + recursion(right, steps - 1)
         else:
-            return backtrack(stone * 2024, steps - 1)
+            return recursion(stone * 2024, steps - 1)
 
     res = 0
     for s in stones:
-        res += backtrack(s, n)
+        res += recursion(s, n)
     return res
 
 
