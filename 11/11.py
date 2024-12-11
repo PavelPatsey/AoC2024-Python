@@ -75,17 +75,23 @@ def get_answer_3(stones, n):
 
 def main():
     stones = get_stones("input")
+
+    t0 = time.time()
+
     print(get_answer(stones, 25))
     t1 = time.time()
+    dt = t1 - t0
+    print("dt1 =", "{:.2f}".format(dt), "sec")
+
     print(get_answer_2(stones, 75))
     t2 = time.time()
     dt = t2 - t1
-    print("dt =", "{:.2f}".format(dt), "sec")
+    print("dt2 =", "{:.2f}".format(dt), "sec")
 
     print(get_answer_3(stones, 75))
     t3 = time.time()
     dt = t3 - t2
-    print("dt =", "{:.2f}".format(dt), "sec")
+    print("dt3 =", "{:.2f}".format(dt), "sec")
 
 
 if __name__ == "__main__":
