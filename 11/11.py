@@ -27,7 +27,7 @@ def get_answer(stones, n):
         mapped = map(convert, converted_stones)
         converted_stones = itertools.chain.from_iterable(mapped)
 
-    return reduce((lambda x, acc: x + acc), converted_stones, 0)
+    return reduce(lambda acc, x: acc + 1, converted_stones, 0)
 
 
 def get_answer_2(stones, n):
