@@ -1,4 +1,6 @@
 import itertools
+import time
+from collections import Counter
 from functools import cache, reduce
 
 
@@ -49,10 +51,41 @@ def get_answer_2(stones, n):
     return sum(map(lambda x: recursion(x, n), stones))
 
 
+def get_answer_3(stones, n):
+    counter = Counter(stones)
+
+    for _ in range(n):
+        new_counter = Counter()
+        for stone, number in counter.items():
+            if stone == 0:
+                new_counter[1] += number
+            elif len(str(stone)) % 2 == 0:
+                stone_str = str(stone)
+                l = len(stone_str)
+                left = int(stone_str[0 : l // 2])
+                right = int(stone_str[l // 2 :])
+                new_counter[left] += number
+                new_counter[right] += number
+            else:
+                new_counter[stone * 2024] += number
+        counter = new_counter
+
+    return sum(counter.values())
+
+
 def main():
     stones = get_stones("input")
     print(get_answer(stones, 25))
+    t1 = time.time()
     print(get_answer_2(stones, 75))
+    t2 = time.time()
+    dt = t2 - t1
+    print("dt =", "{:.2f}".format(dt), "sec")
+
+    print(get_answer_3(stones, 75))
+    t3 = time.time()
+    dt = t3 - t2
+    print("dt =", "{:.2f}".format(dt), "sec")
 
 
 if __name__ == "__main__":
