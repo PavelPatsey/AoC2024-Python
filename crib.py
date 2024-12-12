@@ -24,7 +24,7 @@ RIGHT = (0, 1)
 UP = (-1, 0)
 DOWN = (1, 0)
 
-DIRS = {
+DIRS4_dict = {
     "UP": (-1, 0),
     "DOWN": (1, 0),
     "LEFT": (0, -1),
