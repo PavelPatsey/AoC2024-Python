@@ -70,10 +70,7 @@ def get_perimeter(grid, plot_set):
                 count += 1
         return 4 - count
 
-    perimeter = 0
-    for node in plot_set:
-        perimeter += get_count(node)
-    return perimeter
+    return sum(map(get_count, plot_set))
 
 
 def get_sides_number(plot_set):
@@ -130,6 +127,9 @@ def main():
 
     ans2 = sum(map(lambda x: len(x) * get_sides_number(x), plots.values()))
     print(ans2)
+
+    assert ans1 == 1424006
+    assert ans2 == 858684
 
 
 if __name__ == "__main__":
