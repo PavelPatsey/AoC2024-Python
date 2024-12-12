@@ -116,11 +116,11 @@ def get_sides_number(plot_set):
                     sides[key].append((r, c))
         return sides
 
-    def _get_gaps_count(lst):
+    def _get_gaps_count(numbers):
         count = 1
-        prev = lst[0]
-        for i in lst[1:]:
-            if prev + 1 != i:
+        prev = numbers[0]
+        for i in numbers[1:]:
+            if i != prev + 1:
                 count += 1
             prev = i
         return count
