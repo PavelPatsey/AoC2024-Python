@@ -1,4 +1,5 @@
 from collections import defaultdict
+from functools import reduce
 from itertools import groupby
 from operator import itemgetter
 
@@ -117,13 +118,10 @@ def get_sides_number(plot_set):
         return sides
 
     def _get_gaps_count(numbers):
-        count = 1
-        prev = numbers[0]
-        for i in numbers[1:]:
-            if i != prev + 1:
-                count += 1
-            prev = i
-        return count
+        zipped = zip(numbers, numbers[1:])
+        filtered = filter(lambda x: x[0] != x[1] - 1, zipped)
+        length = reduce(lambda acc, x: acc + 1, filtered, 0)
+        return 1 + length
 
     sides = _get_sides(plot_set)
     res = 0
