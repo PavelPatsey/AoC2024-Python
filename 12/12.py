@@ -49,15 +49,34 @@ def get_plots(grid):
     return plots
 
 
+def get_perimeter(grid, plot_set):
+
+    def get_count(n):
+        count = 0
+        r, c = n
+        for dir in DIRS4:
+            dr, dc = dir
+            nr, nc = r + dr, c + dc
+            if in_grid(nr, nc, grid) and (nr, nc) in plot_set:
+                count += 1
+        return 4 - count
+
+    perimeter = 0
+    for node in plot_set:
+        perimeter += get_count(node)
+    return perimeter
+
+
 def get_answer(grid):
     plots = get_plots(grid)
-    print(f"{plots=}")
-    return
+    res = 0
+    for plot_start, plot_set in plots.items():
+        res += len(plot_set) * get_perimeter(grid, plot_set)
+    return res
 
 
 def main():
-    grid = get_grid("test_input_1")
-    print(f"{grid=}")
+    grid = get_grid("input")
     print(get_answer(grid))
 
 
