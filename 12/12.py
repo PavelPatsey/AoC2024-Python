@@ -29,7 +29,7 @@ def in_grid(r, c, grid):
     return 0 <= r < rows and 0 <= c < cols
 
 
-def get_plots(grid):
+def get_plots_dfs(grid):
     plots = defaultdict(set)
     visited = set()
 
@@ -54,6 +54,38 @@ def get_plots(grid):
             if (r, c) not in visited:
                 dfs(r, c, r, c, grid[r][c])
                 visited.update(plots[(r, c)])
+
+    return plots
+
+
+def get_plots_bfs(grid):
+    visited_plots = set()
+    plots = defaultdict(set)
+
+    def bfs(node, label, grid):
+        visited = {node}
+        queue = [node]
+        while queue:
+            i, j = queue.pop()
+            for di, dj in DIRS4:
+                ni, nj = i + di, j + dj
+                if (
+                    in_grid(ni, nj, grid)
+                    and (ni, nj) not in visited
+                    and grid[ni][nj] == label
+                ):
+                    queue.append((ni, nj))
+                    visited.add((ni, nj))
+        return visited
+
+    rows = len(grid)
+    cols = len(grid[0])
+    for r in range(rows):
+        for c in range(cols):
+            if (r, c) not in visited_plots:
+                plot_set = bfs((r, c), grid[r][c], grid)
+                plots[(r, c)] = plot_set
+                visited_plots.update(plot_set)
 
     return plots
 
@@ -111,25 +143,22 @@ def get_sides_number(plot_set):
     return res
 
 
-def get_answer_2(grid):
-    plots = get_plots(grid)
-    res = 0
-    for plot_start, plot_set in plots.items():
-        res += len(plot_set) * get_sides_number(plot_set)
-    return res
-
-
 def main():
     grid = get_grid("input")
-    plots = get_plots(grid)
 
-    ans1 = sum(map(lambda x: len(x) * get_perimeter(grid, x), plots.values()))
-    print(ans1)
+    plots_dfs = get_plots_dfs(grid)
+    ans1_dfs = sum(map(lambda x: len(x) * get_perimeter(grid, x), plots_dfs.values()))
+    print(ans1_dfs)
 
-    ans2 = sum(map(lambda x: len(x) * get_sides_number(x), plots.values()))
+    plots_bfs = get_plots_bfs(grid)
+    ans1_bfs = sum(map(lambda x: len(x) * get_perimeter(grid, x), plots_bfs.values()))
+    print(ans1_bfs)
+
+    ans2 = sum(map(lambda x: len(x) * get_sides_number(x), plots_bfs.values()))
     print(ans2)
 
-    assert ans1 == 1424006
+    assert ans1_dfs == 1424006
+    assert ans1_bfs == 1424006
     assert ans2 == 858684
 
 
