@@ -76,14 +76,6 @@ def get_perimeter(grid, plot_set):
     return perimeter
 
 
-def get_answer(grid):
-    plots = get_plots(grid)
-    res = 0
-    for plot_start, plot_set in plots.items():
-        res += len(plot_set) * get_perimeter(grid, plot_set)
-    return res
-
-
 def get_sides_number(plot_set):
     sides = defaultdict(list)
     for r, c in plot_set:
@@ -131,8 +123,13 @@ def get_answer_2(grid):
 
 def main():
     grid = get_grid("input")
-    print(get_answer(grid))
-    print(get_answer_2(grid))
+    plots = get_plots(grid)
+
+    ans1 = sum(map(lambda x: len(x) * get_perimeter(grid, x), plots.values()))
+    print(ans1)
+
+    ans2 = sum(map(lambda x: len(x) * get_sides_number(x), plots.values()))
+    print(ans2)
 
 
 if __name__ == "__main__":
