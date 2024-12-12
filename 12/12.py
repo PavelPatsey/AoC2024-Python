@@ -81,30 +81,24 @@ def get_sides_number(plot_set):
             nr, nc = r + dr, c + dc
             if not (nr, nc) in plot_set:
                 sides[key].append((r, c))
-    # print(f"{sides=}")
 
     res = 0
     for key, value in sides.items():
         if key in {"UP", "DOWN"}:
-            n1, n2 = 0, 1
+            s_index, g_index = 0, 1
         else:
-            n1, n2 = 1, 0
+            s_index, g_index = 1, 0
 
-        sorted_value = sorted(value, key=itemgetter(n1), reverse=True)
-        # print(f"{key=} {sorted_value=}")
+        sorted_value = sorted(value, key=itemgetter(s_index), reverse=True)
 
-        for k, group in groupby(sorted_value, lambda x: x[n1]):
-            group = list(group)
-            # print(k, group)
-            mapped = sorted(map(lambda x: x[n2], group))
-            # print(k, mapped)
+        for k, group in groupby(sorted_value, lambda x: x[s_index]):
+            mapped = sorted(map(itemgetter(g_index), group))
             c = 1
             prev = mapped[0]
             for i in mapped[1:]:
                 if prev + 1 != i:
                     c += 1
                 prev = i
-            # print(f"{c=}")
             res += c
 
     return res
