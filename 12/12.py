@@ -103,7 +103,7 @@ def get_sides_number(plot_set):
 
         sorted_value = sorted(value, key=itemgetter(s_index), reverse=True)
 
-        for k, group in groupby(sorted_value, itemgetter(s_index)):
+        for _, group in groupby(sorted_value, itemgetter(s_index)):
             sorted_mapped = sorted(map(itemgetter(g_index), group))
             count = _get_gaps_count(sorted_mapped)
             res += count
