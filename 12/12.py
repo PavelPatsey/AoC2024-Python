@@ -74,14 +74,26 @@ def get_perimeter(grid, plot_set):
 
 
 def get_sides_number(plot_set):
-    sides = defaultdict(list)
-    for r, c in plot_set:
-        for key, dir in DIRS4_dict.items():
-            dr, dc = dir
-            nr, nc = r + dr, c + dc
-            if not (nr, nc) in plot_set:
-                sides[key].append((r, c))
+    def _get_sides(plot_set):
+        sides = defaultdict(list)
+        for r, c in plot_set:
+            for key, dir in DIRS4_dict.items():
+                dr, dc = dir
+                nr, nc = r + dr, c + dc
+                if not (nr, nc) in plot_set:
+                    sides[key].append((r, c))
+        return sides
 
+    def _get_gaps_count(lst):
+        count = 1
+        prev = lst[0]
+        for i in lst[1:]:
+            if prev + 1 != i:
+                count += 1
+            prev = i
+        return count
+
+    sides = _get_sides(plot_set)
     res = 0
     for key, value in sides.items():
         if key in {"UP", "DOWN"}:
@@ -92,14 +104,9 @@ def get_sides_number(plot_set):
         sorted_value = sorted(value, key=itemgetter(s_index), reverse=True)
 
         for k, group in groupby(sorted_value, lambda x: x[s_index]):
-            mapped = sorted(map(itemgetter(g_index), group))
-            c = 1
-            prev = mapped[0]
-            for i in mapped[1:]:
-                if prev + 1 != i:
-                    c += 1
-                prev = i
-            res += c
+            sorted_mapped = sorted(map(itemgetter(g_index), group))
+            count = _get_gaps_count(sorted_mapped)
+            res += count
 
     return res
 
