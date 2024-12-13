@@ -37,8 +37,12 @@ length = reduce(lambda acc, x: acc + 1, lst, 0)
 print(length)
 
 
-def rotate(dir):
-    return dir[0], -dir[1]
+def rotate_clockwise(dir):
+    return dir[1], -dir[0]
+
+
+def rotate_counterclockwise(dir):
+    return -dir[1], dir[0]
 
 
 def in_grid(r, c, grid):
