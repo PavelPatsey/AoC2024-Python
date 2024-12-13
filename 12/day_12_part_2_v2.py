@@ -25,6 +25,8 @@ def get_half_of_corners_count(plot, dir, plot_set):
 
     если есть угол добавляем 1/2, так как он будет рассмотрен еще раз,
     потому что один угол принадлежит двум сторонам
+
+    Аналогично для случая "слева"
     """
     r, c = plot
     dr, dc = dir
@@ -41,7 +43,7 @@ def get_half_of_corners_count(plot, dir, plot_set):
         nodes = ((r0, c0), (r1, c1), (r2, c2))
         mapped = map(lambda x: x in plot_set, nodes)
         if sum(mapped) == 0 or (r1, c1) in plot_set:
-            res += 1 / 2
+            res += 0.5
 
     return res
 
