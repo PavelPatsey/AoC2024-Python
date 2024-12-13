@@ -2,6 +2,7 @@ import re
 
 A_PRICE = 3
 B_PRICE = 1
+ADDITION = 10000000000000
 
 
 def get_machines(input_file):
@@ -22,8 +23,7 @@ def get_machines(input_file):
     return machines
 
 
-def f(machine):
-    a, b, p = machine
+def f(a, b, p):
     x1, y1 = a
     x2, y2 = b
     x, y = p
@@ -43,7 +43,19 @@ def f(machine):
 def get_answer(machines):
     res = 0
     for m in machines:
-        sol = f(m)
+        a, b, p = m
+        sol = f(a, b, p)
+        if sol:
+            res += sol[0] * A_PRICE + sol[1] * B_PRICE
+    return res
+
+
+def get_answer_2(machines):
+    res = 0
+    for m in machines:
+        a, b, p = m
+        p2 = p[0] + ADDITION, p[1] + ADDITION
+        sol = f(a, b, p2)
         if sol:
             res += sol[0] * A_PRICE + sol[1] * B_PRICE
     return res
@@ -52,6 +64,7 @@ def get_answer(machines):
 def main():
     machines = get_machines("input")
     print(get_answer(machines))
+    print(get_answer_2(machines))
 
 
 if __name__ == "__main__":
