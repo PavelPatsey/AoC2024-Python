@@ -1,4 +1,8 @@
 import re
+from collections import Counter
+from copy import deepcopy
+from functools import reduce
+from operator import mul
 
 
 def get_robots(input_file):
@@ -14,21 +18,47 @@ def get_robots(input_file):
     return [_get_robot(line) for line in data]
 
 
-def get_grid(rows, cols):
-    return [[0] * cols for r in range(rows)]
+def get_grid():
+    return [[0] * COLS for _ in range(ROWS)]
+
+
+def convert_robot(robot):
+    p, v = robot
+    c, r = p
+    dc, dr = v
+    new_r = (r + dr) % ROWS
+    new_c = (c + dc) % COLS
+    return (new_c, new_r), v
+
+
+def get_quadrant(robot):
+    c, r = robot[0]
+    rows_mid = ROWS // 2
+    cols_mid = COLS // 2
+    if r == rows_mid or c == cols_mid:
+        return None
+
+    res = c < cols_mid, r < rows_mid
+    return c < cols_mid, r < rows_mid
 
 
 def get_answer(robots):
-    return
+    n = 100
+    converted_robots = deepcopy(robots)
+    for _ in range(n):
+        converted_robots = [convert_robot(r) for r in converted_robots]
+    quadrants = [q for r in converted_robots if (q := get_quadrant(r))]
+    counter = Counter(quadrants)
+    return reduce(mul, counter.values())
+
+
+# ROWS, COLS = 7, 11  # 7, 11 or 103, 101
+ROWS, COLS = 103, 101  # 7, 11 or 103, 101
+FILE = "input"
 
 
 def main():
-    rows, cols = 7, 11  # 7, 11 or 103, 101
-    grid = get_grid(rows, cols)
-    print(grid)
-
-    robots = get_robots("test_input")
-    print(robots)
+    robots = get_robots(FILE)
     print(get_answer(robots))
 
 
