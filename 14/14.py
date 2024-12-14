@@ -14,11 +14,19 @@ def get_robots(input_file):
     return [_get_robot(line) for line in data]
 
 
+def get_grid(rows, cols):
+    return [[0] * cols for r in range(rows)]
+
+
 def get_answer(robots):
     return
 
 
 def main():
+    rows, cols = 7, 11  # 7, 11 or 103, 101
+    grid = get_grid(rows, cols)
+    print(grid)
+
     robots = get_robots("test_input")
     print(robots)
     print(get_answer(robots))
