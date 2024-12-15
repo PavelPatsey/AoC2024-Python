@@ -136,7 +136,7 @@ def convert(grid, move, node):
             raise Exception(f"invalid case! {move=}")
         return all(map(_is_available_node, nodes_to_check))
 
-    def is_moved(pos):
+    def _is_moved(pos):
         r, c = pos
         dr, dc = dir
         nr, nc = r + dr, c + dc
@@ -159,7 +159,7 @@ def convert(grid, move, node):
         else:
             raise Exception(f"invalid case! {grid[nr][nc]=}")
 
-    is_moved = is_moved(node)
+    is_moved = _is_moved(node)
 
     r, c = node
     new_node = node
