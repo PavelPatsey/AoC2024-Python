@@ -78,7 +78,9 @@ def get_box(node, grid):
 
 def convert(g, move, node):
     dir = DIRS[move]
+    dr, dc = dir
     new_grid = deepcopy(g)
+    movable_boxes = []
 
     def _move_box(box):
         left, right = box
@@ -109,22 +111,27 @@ def convert(g, move, node):
         if new_grid[r][c] == ".":
             return True
         elif new_grid[r][c] == "#":
-            return True
+            return False
         elif new_grid[r][c] in {"[", "]"}:
             box = get_box(node, new_grid)
-            if _is_movable_box(box):
+            if _is_movable_box(box) and box not in movable_boxes:
+                movable_boxes.append(box)
                 return True
         else:
             raise Exception(f"invalid case! {new_grid[r][c]=}")
 
     def _is_movable_box(box):
         left, right = box
-        if move in {"^", "v"}:
-            nodes_to_check = [left, right]
-        elif move == "<":
-            nodes_to_check = [left]
+        if move == "<":
+            next_left = left[0] + dir[0], left[1] + dir[1]
+            nodes_to_check = [next_left]
         elif move == ">":
-            nodes_to_check = [right]
+            next_right = right[0] + dir[0], right[1] + dir[1]
+            nodes_to_check = [next_right]
+        elif move in {"^", "v"}:
+            next_left = left[0] + dir[0], left[1] + dir[1]
+            next_right = right[0] + dir[0], right[1] + dir[1]
+            nodes_to_check = [next_left, next_right]
         else:
             raise Exception(f"invalid case! {move=}")
         return all(map(_is_available_node, nodes_to_check))
@@ -139,10 +146,14 @@ def convert(g, move, node):
             return True
         elif new_grid[nr][nc] in {"[", "]"}:
             box = get_box(new_pos, new_grid)
-            if _is_movable_box(box):
-                _move_box(box)
-                moved = is_moved(new_pos)
+            if _is_movable_box(box) and box not in movable_boxes:
+                movable_boxes.append(box)
 
+                print(f"{movable_boxes=}")
+                for b in movable_boxes:
+                    _move_box(b)
+                new_grid[r][c], new_grid[nr][nc] = new_grid[nr][nc], new_grid[r][c]
+                return True
             return False
         elif new_grid[nr][nc] == "#":
             return False
@@ -150,11 +161,14 @@ def convert(g, move, node):
             raise Exception(f"invalid case! {new_grid[nr][nc]=}")
 
     is_moved = is_moved(node)
+    print(f"{is_moved=}")
+
     r, c = node
     new_node = node
     if is_moved:
-        dr, dc = dir
-        new_node = r + dr, c + dc
+        nr, nc = r + dr, c + dc
+        new_node = nr, nc
+    print(f"{new_node=}")
     return new_grid, new_node
 
 
@@ -174,6 +188,8 @@ def get_answer(grid, moves):
     converted_grid = deepcopy(grid)
     for move in moves:
         converted_grid, node = convert(converted_grid, move, node)
+        print(f"Move {move}:")
+        print_grid(converted_grid)
 
     return get_score(converted_grid)
 
