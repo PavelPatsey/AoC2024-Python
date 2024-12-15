@@ -114,8 +114,9 @@ def convert(g, move, node):
             return False
         elif new_grid[r][c] in {"[", "]"}:
             box = get_box(node, new_grid)
-            if _is_movable_box(box) and box not in movable_boxes:
-                movable_boxes.append(box)
+            if _is_movable_box(box):
+                if box not in movable_boxes:
+                    movable_boxes.append(box)
                 return True
         else:
             raise Exception(f"invalid case! {new_grid[r][c]=}")
@@ -146,8 +147,9 @@ def convert(g, move, node):
             return True
         elif new_grid[nr][nc] in {"[", "]"}:
             box = get_box(new_pos, new_grid)
-            if _is_movable_box(box) and box not in movable_boxes:
-                movable_boxes.append(box)
+            if _is_movable_box(box):
+                if box not in movable_boxes:
+                    movable_boxes.append(box)
 
                 print(f"{movable_boxes=}")
                 for b in movable_boxes:
@@ -195,7 +197,7 @@ def get_answer(grid, moves):
 
 
 def main():
-    grid, moves = get_data("input_2_part.txt")
+    grid, moves = get_data("input_larger.txt")
     extended_grid = get_extended_grid(grid)
 
     print("Initial state:")
