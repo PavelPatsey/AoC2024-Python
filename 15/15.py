@@ -114,56 +114,43 @@ def get_pos_2(pos, grid):
     elif grid[r][c] == "]":
         return r - 1, c
     else:
-        raise Exception("Invalid case!")
+        raise Exception(f"Invalid case! {grid[r][c]=}")
 
 
-def convert_2(grid, move, node):
-    dir = DIRS[move]
+def get_boxes_to_move(grid, move, node):
+    visited = set()
 
+
+def get_new_grid(get_boxes_to_move):
+    pass
+
+
+def get_converted_2(grid, move, node):
     # "<" ">" "^" "v"
+    r, c = node
+    dir = DIRS[move]
+    dr, dc = dir
+    nr, nc = dr + dr, c + dc
+    new_node = nr, nc
 
-    def do_move(pos):
-        r, c = pos
-        dr, dc = dir
-        nr, nc = r + dr, c + dc
-        new_pos = nr, nc
-        if grid[nr][nc] == ".":
-            grid[r][c], grid[nr][nc] = grid[nr][nc], grid[r][c]
-            return True
-        elif grid[nr][nc] in {"[", "]"}:
-            pos_2 = get_pos_2(pos, grid)
-            r2, c2 = pos_2
-            nr2, nc2 = r2 + dr, c2 + dc
-            new_pos_2 = nr2, nc2
-
-            is_moved_1 = do_move(new_pos)
-            is_moved_2 = do_move(new_pos_2)
-
-            if is_moved_1 and is_moved_2:
-                grid[r][c], grid[nr][nc] = grid[nr][nc], grid[r][c]
-                grid[r2][c2], grid[nr2][nc2] = grid[nr2][nc2], grid[r2][c2]
-                return True
-            return False
-        elif grid[nr][nc] == "#":
-            return False
-        else:
-            raise Exception("invalid case!")
-
-    is_moved = do_move(node)
-    x, y = node
-    new_node = node
-    if is_moved:
-        dx, dy = dir
-        new_node = x + dx, y + dy
-    return grid, new_node
+    if grid[nr][nc] == ".":
+        grid[r][c], grid[nr][nc] = grid[nr][nc], grid[r][c]
+        return grid, new_node
+    elif grid[nr][nc] == "O":
+        boxes_to_move = get_boxes_to_move(grid, move, node)
+        new_grid = get_new_grid(get_boxes_to_move)
+        return new_grid, new_node
+    elif grid[nr][nc] == "#":
+        return grid, node
+    else:
+        raise Exception("invalid case!")
 
 
 def get_answer_2(grid, moves):
     node = get_start(grid)
-    print(f"{node=}")
     converted_grid = deepcopy(grid)
     for move in moves:
-        converted_grid, node = convert_2(converted_grid, move, node)
+        converted_grid, node = get_converted_2(converted_grid, move, node)
         print_grid(converted_grid)
 
     return get_score(converted_grid)
