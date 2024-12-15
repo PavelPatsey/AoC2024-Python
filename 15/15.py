@@ -58,13 +58,13 @@ def convert(grid, move, node):
         else:
             raise Exception("invalid case!")
 
-    moved = do_move(node)
+    is_moved = do_move(node)
     r, c = node
-    new_start = node
-    if moved:
+    new_node = node
+    if is_moved:
         dr, dc = dir
-        new_start = r + dr, c + dc
-    return grid, new_start
+        new_node = r + dr, c + dc
+    return grid, new_node
 
 
 def get_score(grid):
