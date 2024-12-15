@@ -58,9 +58,12 @@ def convert(grid, move, node):
         else:
             raise Exception("invalid case!")
 
-    do_move(node)
-    new_start = gets_start(grid)
-
+    moved = do_move(node)
+    r, c = node
+    new_start = node
+    if moved:
+        dr, dc = dir
+        new_start = r + dr, c + dc
     return grid, new_start
 
 
@@ -80,8 +83,6 @@ def get_answer(grid, moves, start):
     converted_grid = deepcopy(grid)
     for move in moves:
         converted_grid, node = convert(converted_grid, move, node)
-        print(f"Move {move}:")
-        print_grid(converted_grid)
 
     return get_score(converted_grid)
 
@@ -89,15 +90,8 @@ def get_answer(grid, moves, start):
 def main():
     grid, moves = get_data("input.txt")
 
-    print(f"{len(moves)=}")
-    print(repr(moves))
-    for i, m in enumerate(moves):
-        print(f"{i=} {m=}")
-        if m == "\n":
-            raise Exception(f"invalid case: {i=} {m=}")
-
-    print("Initial state:")
-    print_grid(grid)
+    # print("Initial state:")
+    # print_grid(grid)
 
     start = gets_start(grid)
 
