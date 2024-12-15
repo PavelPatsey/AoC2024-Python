@@ -172,9 +172,9 @@ def get_movable_boxes(grid, move, boxes_dict):
         if move in {"^", "v"}:
             next_nodes = box
         elif move == "<":
-            next_nodes = [(left[0], left[1] - 2)]
+            next_nodes = [left]
         elif move == ">":
-            next_nodes = [(left[0], left[1] + 2)]
+            next_nodes = [right]
         else:
             raise Exception(f"invalid case! {move=}")
         return all(map(is_movable_node, next_nodes))
@@ -187,7 +187,7 @@ def get_movable_boxes(grid, move, boxes_dict):
     return movable_boxes
 
 
-def get_new_grid(grid, movable_boxes):
+def get_new_grid(grid, movable_boxes, move):
     pass
 
 
@@ -205,7 +205,7 @@ def get_converted_2(grid, move, node):
     elif grid[nr][nc] in {"[", "]"}:
         boxes_set = get_boxes_set(grid, move, new_node)
         movable_boxes = get_movable_boxes(grid, move, new_node, boxes_set)
-        new_grid = get_new_grid(grid, movable_boxes)
+        new_grid = get_new_grid(grid, movable_boxes, move)
         return new_grid, new_node
     elif grid[nr][nc] == "#":
         return grid, node
