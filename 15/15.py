@@ -7,6 +7,13 @@ DIRS = {
     "v": (1, 0),
 }
 
+CONVERTS = {
+    "#": "##",
+    "O": "[]",
+    ".": "..",
+    "@": "@.",
+}
+
 
 def get_data(input_file):
     with open(input_file, "r") as file:
@@ -87,16 +94,31 @@ def get_answer(grid, moves, start):
     return get_score(converted_grid)
 
 
+def get_extended_grid(grid):
+    extended_grid = []
+    rows = len(grid)
+    cols = len(grid[0])
+    for r in range(rows):
+        new_row = []
+        for c in range(cols):
+            node = grid[r][c]
+            new_row.append(CONVERTS[node])
+        extended_grid.append(new_row)
+    return extended_grid
+
+
 def main():
-    grid, moves = get_data("input.txt")
+    grid, moves = get_data("input_2_part.txt")
+    # start = get_start(grid)
+    #
+    # ans1 = get_answer(grid, moves, start)
+    # print(f"{ans1=}")
 
-    # print("Initial state:")
-    # print_grid(grid)
+    grid_2 = get_extended_grid(grid)
+    start = get_start(grid_2)
 
-    start = get_start(grid)
-
-    ans1 = get_answer(grid, moves, start)
-    print(f"{ans1=}")
+    print("Initial state:")
+    print_grid(grid_2)
 
 
 if __name__ == "__main__":
