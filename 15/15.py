@@ -1,4 +1,5 @@
 from copy import deepcopy
+from collections import defaultdict
 
 DIRS = {
     "<": (0, -1),
@@ -63,7 +64,7 @@ def convert(grid, move, node):
         elif grid[nr][nc] == "#":
             return False
         else:
-            raise Exception("invalid case!")
+            raise Exception(f"invalid case! {grid[nr][nc]=}")
 
     is_moved = do_move(node)
     r, c = node
@@ -107,18 +108,53 @@ def get_extended_grid(grid):
     return extended_grid
 
 
-def get_pos_2(pos, grid):
-    r, c = pos
+def in_grid(node, grid):
+    r, c = node
+    rows = len(grid)
+    cols = len(grid[0])
+    return 0 <= r < rows and 0 <= c < cols
+
+
+def get_box(node, grid):
+    if not in_grid(node, grid):
+        return
+    r, c = node
     if grid[r][c] == "[":
-        return r + 1, c
+        left = r, c
+        right = r, c + 1
     elif grid[r][c] == "]":
-        return r - 1, c
+        right = r, c
+        left = r, c - 1
     else:
-        raise Exception(f"Invalid case! {grid[r][c]=}")
+        return
+    return left, right
 
 
-def get_boxes_to_move(grid, move, node):
-    visited = set()
+def get_boxes_dict(grid, move, next_n):
+    print(next_n)
+    dir = DIRS[move]
+    # dr, dc = dir
+    boxes_dict = defaultdict(set)
+    box = get_box(next_n, grid)
+    assert box is not None
+    queue = [box]
+    while queue:
+        box = queue.pop()
+        left, right = box
+        if move in {"^", "v"}:
+            next_nodes = box
+        elif move == "<":
+            next_nodes = [(left[0], left[1] - 2)]
+        elif move == ">":
+            next_nodes = [(left[0], left[1] + 2)]
+        for next_n in next_nodes:
+            nr, nc = next_n
+
+            if new_box := get_box((nr, nc), grid):
+                # visited.add(new_box)
+                queue.append(new_box)
+                boxes_dict[box].add(new_box)
+    return boxes_dict
 
 
 def get_new_grid(get_boxes_to_move):
@@ -130,27 +166,32 @@ def get_converted_2(grid, move, node):
     r, c = node
     dir = DIRS[move]
     dr, dc = dir
-    nr, nc = dr + dr, c + dc
+    nr, nc = r + dr, c + dc
     new_node = nr, nc
 
     if grid[nr][nc] == ".":
         grid[r][c], grid[nr][nc] = grid[nr][nc], grid[r][c]
         return grid, new_node
-    elif grid[nr][nc] == "O":
-        boxes_to_move = get_boxes_to_move(grid, move, node)
-        new_grid = get_new_grid(get_boxes_to_move)
+    elif grid[nr][nc] in {"[", "]"}:
+        boxes_dict = get_boxes_dict(grid, move, new_node)
+        print_grid(grid)
+        # print(f"{(grid, move, node)=}")
+        print(f"{boxes_dict=}")
+        assert False
+        new_grid = get_new_grid(get_boxes_dict)
         return new_grid, new_node
     elif grid[nr][nc] == "#":
         return grid, node
     else:
-        raise Exception("invalid case!")
+        raise Exception(f"invalid case! {grid[nr][nc]=}")
 
 
 def get_answer_2(grid, moves):
     node = get_start(grid)
+    new_node = node
     converted_grid = deepcopy(grid)
     for move in moves:
-        converted_grid, node = get_converted_2(converted_grid, move, node)
+        converted_grid, new_node = get_converted_2(converted_grid, move, new_node)
         print_grid(converted_grid)
 
     return get_score(converted_grid)
