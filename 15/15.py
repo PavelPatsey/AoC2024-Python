@@ -238,7 +238,14 @@ def get_converted_2(grid, move, node):
 
 
 def get_score_2(grid):
-    return
+    res = 0
+    rows = len(grid)
+    cols = len(grid[0])
+    for r in range(rows):
+        for c in range(cols):
+            if grid[r][c] == "[":
+                res += r * 100 + c
+    return res
 
 
 def get_answer_2(grid, moves):
