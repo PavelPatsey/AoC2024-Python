@@ -102,9 +102,71 @@ def get_extended_grid(grid):
         new_row = []
         for c in range(cols):
             node = grid[r][c]
-            new_row.append(CONVERTS[node])
+            new_row.extend([x for x in CONVERTS[node]])
         extended_grid.append(new_row)
     return extended_grid
+
+
+def get_pos_2(pos, grid):
+    r, c = pos
+    if grid[r][c] == "[":
+        return r + 1, c
+    elif grid[r][c] == "]":
+        return r - 1, c
+    else:
+        raise Exception("Invalid case!")
+
+
+def convert_2(grid, move, node):
+    dir = DIRS[move]
+
+    # "<" ">" "^" "v"
+
+    def do_move(pos):
+        r, c = pos
+        dr, dc = dir
+        nr, nc = r + dr, c + dc
+        new_pos = nr, nc
+        if grid[nr][nc] == ".":
+            grid[r][c], grid[nr][nc] = grid[nr][nc], grid[r][c]
+            return True
+        elif grid[nr][nc] in {"[", "]"}:
+            pos_2 = get_pos_2(pos, grid)
+            r2, c2 = pos_2
+            nr2, nc2 = r2 + dr, c2 + dc
+            new_pos_2 = nr2, nc2
+
+            is_moved_1 = do_move(new_pos)
+            is_moved_2 = do_move(new_pos_2)
+
+            if is_moved_1 and is_moved_2:
+                grid[r][c], grid[nr][nc] = grid[nr][nc], grid[r][c]
+                grid[r2][c2], grid[nr2][nc2] = grid[nr2][nc2], grid[r2][c2]
+                return True
+            return False
+        elif grid[nr][nc] == "#":
+            return False
+        else:
+            raise Exception("invalid case!")
+
+    is_moved = do_move(node)
+    x, y = node
+    new_node = node
+    if is_moved:
+        dx, dy = dir
+        new_node = x + dx, y + dy
+    return grid, new_node
+
+
+def get_answer_2(grid, moves):
+    node = get_start(grid)
+    print(f"{node=}")
+    converted_grid = deepcopy(grid)
+    for move in moves:
+        converted_grid, node = convert_2(converted_grid, move, node)
+        print_grid(converted_grid)
+
+    return get_score(converted_grid)
 
 
 def main():
@@ -114,11 +176,13 @@ def main():
     # ans1 = get_answer(grid, moves, start)
     # print(f"{ans1=}")
 
-    grid_2 = get_extended_grid(grid)
-    start = get_start(grid_2)
+    extended_grid = get_extended_grid(grid)
 
     print("Initial state:")
-    print_grid(grid_2)
+    print_grid(extended_grid)
+
+    ans2 = get_answer_2(extended_grid, moves)
+    print(f"{ans2=}")
 
 
 if __name__ == "__main__":
