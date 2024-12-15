@@ -130,6 +130,7 @@ def get_box(node, grid):
 
 
 def get_visited_boxes(grid, move, node):
+    dir = DIRS[move]
     box = get_box(node, grid)
     assert box is not None
     visited = [box]
@@ -138,7 +139,9 @@ def get_visited_boxes(grid, move, node):
         box = queue.pop()
         left, right = box
         if move in {"^", "v"}:
-            next_nodes = box
+            next_left = left[0] + dir[0], left[1] + dir[1]
+            next_right = right[0] + dir[0], right[1] + dir[1]
+            next_nodes = [next_left, next_right]
         elif move == "<":
             next_nodes = [(left[0], left[1] - 2)]
         elif move == ">":
@@ -152,7 +155,7 @@ def get_visited_boxes(grid, move, node):
     return visited
 
 
-def get_converted_grid(grid, move, visited_boxes, node):
+def get_converted_grid(g, move, visited_boxes, node):
     dir = DIRS[move]
 
     def _move_box(box):
@@ -199,10 +202,10 @@ def get_converted_grid(grid, move, visited_boxes, node):
             raise Exception(f"invalid case! {move=}")
         return all(map(_is_available_node, nodes_to_check))
 
-    new_grid = deepcopy(grid)
+    new_grid = deepcopy(g)
     for b in visited_boxes[::-1]:
         if not _is_movable_box(b):
-            return grid, False
+            return g, False
         _move_box(b)
 
     r, c = node
@@ -234,6 +237,10 @@ def get_converted_2(grid, move, node):
         raise Exception(f"invalid case! {grid[nr][nc]=}")
 
 
+def get_score_2(grid):
+    return
+
+
 def get_answer_2(grid, moves):
     node = get_start(grid)
     new_node = node
@@ -243,7 +250,7 @@ def get_answer_2(grid, moves):
         print(f"Move {move}:")
         print_grid(converted_grid)
 
-    return get_score(converted_grid)
+    return get_score_2(converted_grid)
 
 
 def main():
