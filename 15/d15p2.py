@@ -76,10 +76,9 @@ def get_box(node, grid):
     return left, right
 
 
-def convert(g, move, node):
+def convert(grid, move, node):
     dir = DIRS[move]
     dr, dc = dir
-    new_grid = deepcopy(g)
     movable_boxes = []
 
     def _move_box(box):
@@ -88,12 +87,12 @@ def convert(g, move, node):
             next_node = left[0] + dir[0], left[1] + dir[1]
             for n, ch in zip([next_node, left, right], ["[", "]", "."]):
                 r, c = n
-                new_grid[r][c] = ch
+                grid[r][c] = ch
         elif move == ">":
             next_node = right[0] + dir[0], right[1] + dir[1]
             for n, ch in zip([left, right, next_node], [".", "[", "]"]):
                 r, c = n
-                new_grid[r][c] = ch
+                grid[r][c] = ch
         elif move in {"^", "v"}:
             next_left = left[0] + dir[0], left[1] + dir[1]
             next_right = right[0] + dir[0], right[1] + dir[1]
@@ -102,24 +101,24 @@ def convert(g, move, node):
                 [".", ".", "[", "]"],
             ):
                 r, c = n
-                new_grid[r][c] = ch
+                grid[r][c] = ch
         else:
             raise Exception(f"invalid case! {move=}")
 
     def _is_available_node(node):
         r, c = node
-        if new_grid[r][c] == ".":
+        if grid[r][c] == ".":
             return True
-        elif new_grid[r][c] == "#":
+        elif grid[r][c] == "#":
             return False
-        elif new_grid[r][c] in {"[", "]"}:
-            box = get_box(node, new_grid)
+        elif grid[r][c] in {"[", "]"}:
+            box = get_box(node, grid)
             if _is_movable_box(box):
                 if box not in movable_boxes:
                     movable_boxes.append(box)
                 return True
         else:
-            raise Exception(f"invalid case! {new_grid[r][c]=}")
+            raise Exception(f"invalid case! {grid[r][c]=}")
 
     def _is_movable_box(box):
         left, right = box
@@ -142,36 +141,32 @@ def convert(g, move, node):
         dr, dc = dir
         nr, nc = r + dr, c + dc
         new_pos = nr, nc
-        if new_grid[nr][nc] == ".":
-            new_grid[r][c], new_grid[nr][nc] = new_grid[nr][nc], new_grid[r][c]
+        if grid[nr][nc] == ".":
+            grid[r][c], grid[nr][nc] = grid[nr][nc], grid[r][c]
             return True
-        elif new_grid[nr][nc] in {"[", "]"}:
-            box = get_box(new_pos, new_grid)
+        elif grid[nr][nc] in {"[", "]"}:
+            box = get_box(new_pos, grid)
             if _is_movable_box(box):
                 if box not in movable_boxes:
                     movable_boxes.append(box)
-
-                print(f"{movable_boxes=}")
                 for b in movable_boxes:
                     _move_box(b)
-                new_grid[r][c], new_grid[nr][nc] = new_grid[nr][nc], new_grid[r][c]
+                grid[r][c], grid[nr][nc] = grid[nr][nc], grid[r][c]
                 return True
             return False
-        elif new_grid[nr][nc] == "#":
+        elif grid[nr][nc] == "#":
             return False
         else:
-            raise Exception(f"invalid case! {new_grid[nr][nc]=}")
+            raise Exception(f"invalid case! {grid[nr][nc]=}")
 
     is_moved = is_moved(node)
-    print(f"{is_moved=}")
 
     r, c = node
     new_node = node
     if is_moved:
         nr, nc = r + dr, c + dc
         new_node = nr, nc
-    print(f"{new_node=}")
-    return new_grid, new_node
+    return grid, new_node
 
 
 def get_score(grid):
@@ -190,21 +185,14 @@ def get_answer(grid, moves):
     converted_grid = deepcopy(grid)
     for move in moves:
         converted_grid, node = convert(converted_grid, move, node)
-        print(f"Move {move}:")
-        # print_grid(converted_grid)
-
     return get_score(converted_grid)
 
 
 def main():
     grid, moves = get_data("input.txt")
     extended_grid = get_extended_grid(grid)
-
-    print("Initial state:")
-    print_grid(extended_grid)
-
-    ans1 = get_answer(extended_grid, moves)
-    print(f"{ans1=}")
+    ans2 = get_answer(extended_grid, moves)
+    print(f"{ans2=}")
 
 
 if __name__ == "__main__":
