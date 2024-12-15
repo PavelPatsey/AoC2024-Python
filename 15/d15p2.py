@@ -1,3 +1,4 @@
+import cProfile
 from copy import deepcopy
 
 DIRS = {
@@ -196,4 +197,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    cProfile.run("main()")
