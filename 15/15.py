@@ -1,5 +1,4 @@
 from copy import deepcopy
-from collections import defaultdict
 
 DIRS = {
     "<": (0, -1),
@@ -130,13 +129,10 @@ def get_box(node, grid):
     return left, right
 
 
-def get_boxes_dict(grid, move, node):
-    print(node)
-    dir = DIRS[move]
-    # dr, dc = dir
-    boxes_dict = defaultdict(set)
+def get_boxes_set(grid, move, node):
     box = get_box(node, grid)
     assert box is not None
+    visited = set(box)
     queue = [box]
     while queue:
         box = queue.pop()
@@ -151,13 +147,47 @@ def get_boxes_dict(grid, move, node):
             nr, nc = next_n
 
             if new_box := get_box((nr, nc), grid):
-                # visited.add(new_box)
+                visited.add(new_box)
                 queue.append(new_box)
-                boxes_dict[box].add(new_box)
-    return boxes_dict
+    return visited
 
 
-def get_new_grid(get_boxes_to_move):
+def get_movable_boxes(grid, move, boxes_dict):
+    def is_movable_node(node):
+        r, c = node
+        dr, dc = DIRS[move]
+        nr, nc = r + dr, c + dc
+        if grid[nr][nc] == ".":
+            return True
+        elif grid[nr][nc] == "#":
+            return False
+        elif grid[nr][nc] in {"[", "]"}:
+            new_box = get_box((nr, nc), grid)
+            return is_movable_box(new_box)
+        else:
+            raise Exception(f"invalid case! {grid[nr][nc]=}")
+
+    def is_movable_box(box):
+        left, right = box
+        if move in {"^", "v"}:
+            next_nodes = box
+        elif move == "<":
+            next_nodes = [(left[0], left[1] - 2)]
+        elif move == ">":
+            next_nodes = [(left[0], left[1] + 2)]
+        else:
+            raise Exception(f"invalid case! {move=}")
+        return all(map(is_movable_node, next_nodes))
+
+    movable_boxes = []
+    for b in boxes_dict:
+        if is_movable_box(b):
+            movable_boxes.append(b)
+
+    return movable_boxes
+
+
+def get_new_grid(grid, movable_boxes):
     pass
 
 
@@ -173,12 +203,9 @@ def get_converted_2(grid, move, node):
         grid[r][c], grid[nr][nc] = grid[nr][nc], grid[r][c]
         return grid, new_node
     elif grid[nr][nc] in {"[", "]"}:
-        boxes_dict = get_boxes_dict(grid, move, new_node)
-        print_grid(grid)
-        # print(f"{(grid, move, node)=}")
-        print(f"{boxes_dict=}")
-        assert False
-        new_grid = get_new_grid(get_boxes_dict)
+        boxes_set = get_boxes_set(grid, move, new_node)
+        movable_boxes = get_movable_boxes(grid, move, new_node, boxes_set)
+        new_grid = get_new_grid(grid, movable_boxes)
         return new_grid, new_node
     elif grid[nr][nc] == "#":
         return grid, node
