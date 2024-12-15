@@ -26,7 +26,7 @@ def print_grid(grid):
     return
 
 
-def gets_start(grid):
+def get_start(grid):
     rows = len(grid)
     cols = len(grid[0])
     for r in range(rows):
@@ -93,7 +93,7 @@ def main():
     # print("Initial state:")
     # print_grid(grid)
 
-    start = gets_start(grid)
+    start = get_start(grid)
 
     ans1 = get_answer(grid, moves, start)
     print(f"{ans1=}")
