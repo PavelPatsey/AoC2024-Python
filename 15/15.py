@@ -130,12 +130,12 @@ def get_box(node, grid):
     return left, right
 
 
-def get_boxes_dict(grid, move, next_n):
-    print(next_n)
+def get_boxes_dict(grid, move, node):
+    print(node)
     dir = DIRS[move]
     # dr, dc = dir
     boxes_dict = defaultdict(set)
-    box = get_box(next_n, grid)
+    box = get_box(node, grid)
     assert box is not None
     queue = [box]
     while queue:
