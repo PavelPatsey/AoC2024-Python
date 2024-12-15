@@ -14,6 +14,8 @@ def get_data(input_file):
     grid, moves = data.split("\n\n")
     grid = grid.split()
     grid = [[x for x in line] for line in grid]
+    moves = moves.strip()
+    moves = "".join(moves.split())
     return grid, moves
 
 
@@ -62,17 +64,38 @@ def convert(grid, move, node):
     return grid, new_start
 
 
+def get_score(grid):
+    res = 0
+    rows = len(grid)
+    cols = len(grid[0])
+    for r in range(rows):
+        for c in range(cols):
+            if grid[r][c] == "O":
+                res += r * 100 + c
+    return res
+
+
 def get_answer(grid, moves, start):
     node = start
     converted_grid = deepcopy(grid)
     for move in moves:
-        converted_grid, node = convert(grid, move, node)
+        converted_grid, node = convert(converted_grid, move, node)
         print(f"Move {move}:")
-        print_grid(grid)
+        print_grid(converted_grid)
+
+    return get_score(converted_grid)
 
 
 def main():
-    grid, moves = get_data("test_input.txt")
+    grid, moves = get_data("input.txt")
+
+    print(f"{len(moves)=}")
+    print(repr(moves))
+    for i, m in enumerate(moves):
+        print(f"{i=} {m=}")
+        if m == "\n":
+            raise Exception(f"invalid case: {i=} {m=}")
+
     print("Initial state:")
     print_grid(grid)
 
