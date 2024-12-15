@@ -191,13 +191,13 @@ def get_answer(grid, moves):
     for move in moves:
         converted_grid, node = convert(converted_grid, move, node)
         print(f"Move {move}:")
-        print_grid(converted_grid)
+        # print_grid(converted_grid)
 
     return get_score(converted_grid)
 
 
 def main():
-    grid, moves = get_data("input_larger.txt")
+    grid, moves = get_data("input.txt")
     extended_grid = get_extended_grid(grid)
 
     print("Initial state:")
