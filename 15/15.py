@@ -150,8 +150,9 @@ def get_visited_boxes(grid, move, node):
             nr, nc = next_n
 
             if new_box := get_box((nr, nc), grid):
-                visited.append(new_box)
-                queue.append(new_box)
+                if new_box not in visited:
+                    visited.append(new_box)
+                    queue.append(new_box)
     return visited
 
 
@@ -261,7 +262,7 @@ def get_answer_2(grid, moves):
 
 
 def main():
-    grid, moves = get_data("input_2_part.txt")
+    grid, moves = get_data("test_input_my_1.txt")
     # start = get_start(grid)
     #
     # ans1 = get_answer(grid, moves, start)

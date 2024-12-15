@@ -7,6 +7,13 @@ DIRS = {
     "v": (1, 0),
 }
 
+CONVERTS = {
+    "#": "##",
+    "O": "[]",
+    ".": "..",
+    "@": "@.",
+}
+
 
 def get_data(input_file):
     with open(input_file, "r") as file:
@@ -17,6 +24,19 @@ def get_data(input_file):
     moves = moves.strip()
     moves = "".join(moves.split())
     return grid, moves
+
+
+def get_extended_grid(grid):
+    extended_grid = []
+    rows = len(grid)
+    cols = len(grid[0])
+    for r in range(rows):
+        new_row = []
+        for c in range(cols):
+            node = grid[r][c]
+            new_row.extend([x for x in CONVERTS[node]])
+        extended_grid.append(new_row)
+    return extended_grid
 
 
 def print_grid(grid):
@@ -36,35 +56,106 @@ def get_start(grid):
     return
 
 
-def convert(grid, move, node):
-    dir = DIRS[move]
+def in_grid(node, grid):
+    r, c = node
+    rows = len(grid)
+    cols = len(grid[0])
+    return 0 <= r < rows and 0 <= c < cols
 
-    def do_move(pos):
+
+def get_box(node, grid):
+    r, c = node
+    if grid[r][c] == "[":
+        left = r, c
+        right = r, c + 1
+    elif grid[r][c] == "]":
+        right = r, c
+        left = r, c - 1
+    else:
+        raise Exception(f"invalid case! {grid[r][c]=}")
+    return left, right
+
+
+def convert(g, move, node):
+    dir = DIRS[move]
+    new_grid = deepcopy(g)
+
+    def _move_box(box):
+        left, right = box
+        if move == "<":
+            next_node = left[0] + dir[0], left[1] + dir[1]
+            for n, ch in zip([next_node, left, right], ["[", "]", "."]):
+                r, c = n
+                new_grid[r][c] = ch
+        elif move == ">":
+            next_node = right[0] + dir[0], right[1] + dir[1]
+            for n, ch in zip([left, right, next_node], [".", "[", "]"]):
+                r, c = n
+                new_grid[r][c] = ch
+        elif move in {"^", "v"}:
+            next_left = left[0] + dir[0], left[1] + dir[1]
+            next_right = right[0] + dir[0], right[1] + dir[1]
+            for n, ch in zip(
+                [left, right, next_left, next_right],
+                [".", ".", "[", "]"],
+            ):
+                r, c = n
+                new_grid[r][c] = ch
+        else:
+            raise Exception(f"invalid case! {move=}")
+
+    def _is_available_node(node):
+        r, c = node
+        if new_grid[r][c] == ".":
+            return True
+        elif new_grid[r][c] == "#":
+            return True
+        elif new_grid[r][c] in {"[", "]"}:
+            box = get_box(node, new_grid)
+            if _is_movable_box(box):
+                return True
+        else:
+            raise Exception(f"invalid case! {new_grid[r][c]=}")
+
+    def _is_movable_box(box):
+        left, right = box
+        if move in {"^", "v"}:
+            nodes_to_check = [left, right]
+        elif move == "<":
+            nodes_to_check = [left]
+        elif move == ">":
+            nodes_to_check = [right]
+        else:
+            raise Exception(f"invalid case! {move=}")
+        return all(map(_is_available_node, nodes_to_check))
+
+    def is_moved(pos):
         r, c = pos
         dr, dc = dir
         nr, nc = r + dr, c + dc
         new_pos = nr, nc
-        if grid[nr][nc] == ".":
-            grid[r][c], grid[nr][nc] = grid[nr][nc], grid[r][c]
+        if new_grid[nr][nc] == ".":
+            new_grid[r][c], new_grid[nr][nc] = new_grid[nr][nc], new_grid[r][c]
             return True
-        elif grid[nr][nc] == "O":
-            moved = do_move(new_pos)
-            if moved:
-                grid[r][c], grid[nr][nc] = grid[nr][nc], grid[r][c]
-                return True
+        elif new_grid[nr][nc] in {"[", "]"}:
+            box = get_box(new_pos, new_grid)
+            if _is_movable_box(box):
+                _move_box(box)
+                moved = is_moved(new_pos)
+
             return False
-        elif grid[nr][nc] == "#":
+        elif new_grid[nr][nc] == "#":
             return False
         else:
-            raise Exception(f"invalid case! {grid[nr][nc]=}")
+            raise Exception(f"invalid case! {new_grid[nr][nc]=}")
 
-    is_moved = do_move(node)
+    is_moved = is_moved(node)
     r, c = node
     new_node = node
     if is_moved:
         dr, dc = dir
         new_node = r + dr, c + dc
-    return grid, new_node
+    return new_grid, new_node
 
 
 def get_score(grid):
@@ -73,13 +164,13 @@ def get_score(grid):
     cols = len(grid[0])
     for r in range(rows):
         for c in range(cols):
-            if grid[r][c] == "O":
+            if grid[r][c] == "[":
                 res += r * 100 + c
     return res
 
 
-def get_answer(grid, moves, start):
-    node = start
+def get_answer(grid, moves):
+    node = get_start(grid)
     converted_grid = deepcopy(grid)
     for move in moves:
         converted_grid, node = convert(converted_grid, move, node)
@@ -88,10 +179,13 @@ def get_answer(grid, moves, start):
 
 
 def main():
-    grid, moves = get_data("input.txt")
-    start = get_start(grid)
+    grid, moves = get_data("input_2_part.txt")
+    extended_grid = get_extended_grid(grid)
 
-    ans1 = get_answer(grid, moves, start)
+    print("Initial state:")
+    print_grid(extended_grid)
+
+    ans1 = get_answer(extended_grid, moves)
     print(f"{ans1=}")
 
 
