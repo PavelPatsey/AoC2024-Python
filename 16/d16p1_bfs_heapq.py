@@ -19,7 +19,7 @@ def get_start(grid):
 
 
 def get_answer(grid):
-    res = []
+    res = None
     sr, sc = get_start(grid)
     visited = set()
     queue = [(0, sr, sc, 0, 1)]
@@ -28,7 +28,8 @@ def get_answer(grid):
         score, r, c, dr, dc = heapq.heappop(queue)
         visited.add((r, c, dr, dc))
         if grid[r][c] == "E":
-            res.append(score)
+            res = score
+            break
         for new_score, nr, nc, ndr, ndc in [
             (score + 1, r + dr, c + dc, dr, dc),
             (score + 1000, r, c, dc, -dr),
@@ -37,7 +38,7 @@ def get_answer(grid):
             if grid[nr][nc] != "#" and (nr, nc, ndr, ndc) not in visited:
                 heapq.heappush(queue, (new_score, nr, nc, ndr, ndc))
 
-    return min(res)
+    return res
 
 
 def main():
