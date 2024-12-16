@@ -10,14 +10,6 @@ def get_data(input_file):
     return [[x for x in line] for line in data]
 
 
-DIRS4 = (
-    (0, -1),
-    (0, 1),
-    (-1, 0),
-    (1, 0),
-)
-
-
 def rotate_clockwise(dir):
     return dir[1], -dir[0]
 
