@@ -1,5 +1,5 @@
+import cProfile
 import sys
-from functools import cache
 
 sys.setrecursionlimit(5_000)
 
@@ -42,9 +42,9 @@ def get_answer(grid):
     def dfs(node, dir, score, visited):
         r, c = node
         if grid[r][c] == "E":
-            # print(f"{scores=}")
-            # print(f"{visited=}")
-            # print("===")
+            print(f"{scores=}")
+            print(f"{visited=}")
+            print("===")
             scores.append(score)
             return
         elif grid[r][c] == "#" or node in visited:
@@ -80,8 +80,8 @@ def get_answer(grid):
 
 def main():
     grid = get_data("input_small.txt")
-    print(get_answer(grid))
+    print("ans =", get_answer(grid))
 
 
 if __name__ == "__main__":
-    main()
+    cProfile.run("main()")
