@@ -1,6 +1,7 @@
 import sys
+from functools import cache
 
-sys.setrecursionlimit(2000)
+sys.setrecursionlimit(5_000)
 
 
 def get_data(input_file):
@@ -47,11 +48,11 @@ def dfs(grid, node, dir, score, visited):
     dirs = [dir, rotate_clockwise(dir), rotate_counterclockwise(dir)]
     d_scores = [1, 1_001, 1_001]
     m = float("inf")
-    for d, ds in zip(dirs, d_scores):
-        dr, dc = d
+    for dir, ds in zip(dirs, d_scores):
+        dr, dc = dir
         new_node = r + dr, c + dc
         new_score = score + ds
-        a = dfs(grid, new_node, d, new_score, visited)
+        a = dfs(grid, new_node, dir, new_score, visited)
         m = min(m, a)
     return m
 
@@ -72,13 +73,12 @@ def get_answer(grid):
     for dir, score in zip(dirs, scores):
         dr, dc = dir
         new_node = r + dr, c + dc
-        res = min(res, dfs(grid, new_node, dir, score, set()))
+        res = min(res, dfs(grid, new_node, dir, score, {start}))
     return res
 
 
 def main():
     grid = get_data("input_large.txt")
-    print(grid)
     print(get_answer(grid))
 
 
