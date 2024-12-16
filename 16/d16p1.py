@@ -1,3 +1,8 @@
+import sys
+
+sys.setrecursionlimit(2000)
+
+
 def get_data(input_file):
     with open(input_file, "r") as file:
         data = file.read().splitlines()
@@ -72,7 +77,7 @@ def get_answer(grid):
 
 
 def main():
-    grid = get_data("input_small.txt")
+    grid = get_data("input_large.txt")
     print(grid)
     print(get_answer(grid))
 
