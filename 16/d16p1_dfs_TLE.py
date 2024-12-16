@@ -36,49 +36,50 @@ def get_start(grid):
     return
 
 
-def dfs(grid, node, dir, score, visited):
-    r, c = node
-    if grid[r][c] == "E":
-        return score
-    elif grid[r][c] == "#" or node in visited:
-        return float("inf")
-
-    visited = visited | {node}
-
-    dirs = [dir, rotate_clockwise(dir), rotate_counterclockwise(dir)]
-    d_scores = [1, 1_001, 1_001]
-    m = float("inf")
-    for dir, ds in zip(dirs, d_scores):
-        dr, dc = dir
-        new_node = r + dr, c + dc
-        new_score = score + ds
-        a = dfs(grid, new_node, dir, new_score, visited)
-        m = min(m, a)
-    return m
-
-
 def get_answer(grid):
+    scores = []
 
-    res = float("inf")
+    def dfs(node, dir, score, visited):
+        r, c = node
+        if grid[r][c] == "E":
+            # print(f"{scores=}")
+            # print(f"{visited=}")
+            # print("===")
+            scores.append(score)
+            return
+        elif grid[r][c] == "#" or node in visited:
+            return
+
+        visited = visited | {node}
+
+        dirs = [dir, rotate_clockwise(dir), rotate_counterclockwise(dir)]
+        d_scores = [1, 1_001, 1_001]
+        for dir, ds in zip(dirs, d_scores):
+            dr, dc = dir
+            new_node = r + dr, c + dc
+            new_score = score + ds
+            dfs(new_node, dir, new_score, visited)
+
     start = get_start(grid)
     dir = (0, 1)
     dirs = [
         dir,
         rotate_clockwise(dir),
         rotate_counterclockwise(dir),
-        rotate_clockwise(rotate_clockwise(dir)),
+        (-dir[0], -dir[1]),
     ]
-    scores = [1, 1_001, 1_001, 2_001]
     r, c = start
-    for dir, score in zip(dirs, scores):
+    for dir, score in zip(dirs, [1, 1_001, 1_001, 2_001]):
         dr, dc = dir
         new_node = r + dr, c + dc
-        res = min(res, dfs(grid, new_node, dir, score, {start}))
-    return res
+        dfs(new_node, dir, score, {start})
+
+    print(f"{scores=}")
+    return min(scores)
 
 
 def main():
-    grid = get_data("input_large.txt")
+    grid = get_data("input_small.txt")
     print(get_answer(grid))
 
 
