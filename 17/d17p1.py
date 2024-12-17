@@ -1,5 +1,39 @@
 import re
 
+OPCODES = {
+    0: "adv",
+    1: "bxl",
+    2: "bst",
+    3: "jnz",
+    4: "bxc",
+    5: "out",
+    6: "bdv",
+    7: "cdv",
+}
+
+OPERANDS = {
+    0: 0,
+    1: 1,
+    2: 2,
+    3: 3,
+    4: "A",
+    5: "B",
+    6: "C",
+}
+
+
+def get_operand(opr, a, b, c):
+    if 0 <= opr <= 3:
+        return opr
+    elif opr == 4:
+        return a
+    elif opr == 5:
+        return b
+    elif opr == 6:
+        return c
+    else:
+        raise Exception("Invalid operand value")
+
 
 def get_data(input_file):
     pattern = re.compile(r"\d+", re.MULTILINE)
@@ -14,7 +48,7 @@ def get_data(input_file):
     return a, b, c, program
 
 
-def get_answer(data):
+def get_answer(a, b, c, program):
     return
 
 
