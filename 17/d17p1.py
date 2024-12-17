@@ -1,39 +1,5 @@
 import re
 
-OPCODES = {
-    0: "adv",
-    1: "bxl",
-    2: "bst",
-    3: "jnz",
-    4: "bxc",
-    5: "out",
-    6: "bdv",
-    7: "cdv",
-}
-
-OPERANDS = {
-    0: 0,
-    1: 1,
-    2: 2,
-    3: 3,
-    4: "A",
-    5: "B",
-    6: "C",
-}
-
-
-def get_operand(opr, a, b, c):
-    if 0 <= opr <= 3:
-        return opr
-    elif opr == 4:
-        return a
-    elif opr == 5:
-        return b
-    elif opr == 6:
-        return c
-    else:
-        raise Exception("Invalid operand value")
-
 
 def get_data(input_file):
     pattern = re.compile(r"\d+", re.MULTILINE)
@@ -48,8 +14,75 @@ def get_data(input_file):
     return a, b, c, program
 
 
+def get_combo_operand(operand, a, b, c):
+    if 0 <= operand <= 3:
+        return operand
+    elif operand == 4:
+        return a
+    elif operand == 5:
+        return b
+    elif operand == 6:
+        return c
+    else:
+        raise Exception("Invalid operand value")
+
+
+def adv(operand, a, b, c):
+    combo = get_combo_operand(operand, a, b, c)
+    res = a // (2 ^ combo)
+    a = res
+    return res, a, b, c
+
+
+def bxl(operand, a, b, c):
+    res = b ^ operand
+    b = res
+    return res, a, b, c
+
+
+def bst(operand, a, b, c):
+    combo = get_combo_operand(operand, a, b, c)
+    res = combo % 8
+    b = res
+    return res, a, b, c
+
+
+def jnz(operand, a, b, c):
+    if a != 0:
+        res = operand
+    else:
+        res += 2
+
+
+OPCODES = {
+    0: "adv",
+    1: "bxl",
+    2: "bst",
+    3: "jnz",
+    4: "bxc",
+    5: "out",
+    6: "bdv",
+    7: "cdv",
+}
+
+
+def do_instruction(opcode, operand, a, b, c):
+    return res, a, b, c
+
+
 def get_answer(a, b, c, program):
-    return
+    res = []
+    n = len(program)
+    i = 0
+
+    while i < n:
+        opcode = program[i]
+        operand = program[i + 1]
+        if i == 0:
+            # adv
+            combo = get_combo_operand(operand, a, b, c)
+            res = a // (2 ^ combo)
+            a = res
 
 
 def main():
