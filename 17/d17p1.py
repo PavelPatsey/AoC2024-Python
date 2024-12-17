@@ -56,7 +56,7 @@ def get_answer(a, b, c, program):
                 i += 2
         elif opcode == 4:
             # bxc
-            b = b ^ b
+            b = b ^ c
             i += 2
         elif opcode == 5:
             # out
@@ -64,19 +64,19 @@ def get_answer(a, b, c, program):
             i += 2
         elif opcode == 6:
             # bdv
-            a = a // (2**combo)
+            b = a // (2**combo)
             i += 2
-        elif opcode == 6:
-            # bdv
+        elif opcode == 7:
+            # cdv
             c = a // (2**combo)
             i += 2
         else:
-            raise Exception("Invalid opcode value!")
+            raise Exception(f"Invalid opcode value! {opcode=}")
     return ",".join(map(str, res))
 
 
 def main():
-    a, b, c, program = get_data("test_input.txt")
+    a, b, c, program = get_data("input.txt")
     print(a, b, c, program)
     print(get_answer(a, b, c, program))
 
