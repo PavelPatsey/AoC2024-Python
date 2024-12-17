@@ -14,7 +14,7 @@ def get_data(input_file):
     return a, b, c, program
 
 
-def get_combo_operand(operand, a, b, c):
+def get_combo(operand, a, b, c):
     if 0 <= operand <= 3:
         return operand
     elif operand == 4:
@@ -27,49 +27,6 @@ def get_combo_operand(operand, a, b, c):
         raise Exception("Invalid operand value")
 
 
-def adv(operand, a, b, c):
-    combo = get_combo_operand(operand, a, b, c)
-    res = a // (2 ^ combo)
-    a = res
-    return res, a, b, c
-
-
-def bxl(operand, a, b, c):
-    res = b ^ operand
-    b = res
-    return res, a, b, c
-
-
-def bst(operand, a, b, c):
-    combo = get_combo_operand(operand, a, b, c)
-    res = combo % 8
-    b = res
-    return res, a, b, c
-
-
-def jnz(operand, a, b, c):
-    if a != 0:
-        res = operand
-    else:
-        res += 2
-
-
-OPCODES = {
-    0: "adv",
-    1: "bxl",
-    2: "bst",
-    3: "jnz",
-    4: "bxc",
-    5: "out",
-    6: "bdv",
-    7: "cdv",
-}
-
-
-def do_instruction(opcode, operand, a, b, c):
-    return res, a, b, c
-
-
 def get_answer(a, b, c, program):
     res = []
     n = len(program)
@@ -78,17 +35,50 @@ def get_answer(a, b, c, program):
     while i < n:
         opcode = program[i]
         operand = program[i + 1]
-        if i == 0:
+        combo = get_combo(operand, a, b, c)
+        if opcode == 0:
             # adv
-            combo = get_combo_operand(operand, a, b, c)
-            res = a // (2 ^ combo)
-            a = res
+            a = a // (2**combo)
+            i += 2
+        elif opcode == 1:
+            # bxl
+            b = b ^ operand
+            i += 2
+        elif opcode == 2:
+            # bst
+            b = combo % 8
+            i += 2
+        elif opcode == 3:
+            # jnz
+            if a != 0:
+                i = operand
+            else:
+                i += 2
+        elif opcode == 4:
+            # bxc
+            b = b ^ b
+            i += 2
+        elif opcode == 5:
+            # out
+            res.append(combo % 8)
+            i += 2
+        elif opcode == 6:
+            # bdv
+            a = a // (2**combo)
+            i += 2
+        elif opcode == 6:
+            # bdv
+            c = a // (2**combo)
+            i += 2
+        else:
+            raise Exception("Invalid opcode value!")
+    return ",".join(map(str, res))
 
 
 def main():
     a, b, c, program = get_data("test_input.txt")
     print(a, b, c, program)
-    # print(get_answer(data))
+    print(get_answer(a, b, c, program))
 
 
 if __name__ == "__main__":
