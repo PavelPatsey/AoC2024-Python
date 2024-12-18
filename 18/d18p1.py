@@ -1,5 +1,4 @@
 import heapq
-from collections import deque
 
 DIRS4 = (
     (0, -1),
@@ -37,28 +36,18 @@ def print_grid(grid):
 
 
 def get_answer(n, m, bytes):
-
-    bytes_slice = bytes[0 : m + 1]
-    print(bytes_slice)
+    bytes_slice = bytes[0:m]
     grid = get_grid(n, bytes_slice)
-    print_grid(grid)
 
     start = 0, 0
     end = n, n
 
-    lst = []
-
-    res = None
     sr, sc = start
     visited = set()
-    queue = deque()
-    queue.append((0, sr, sc))
-    # queue = [(0, sr, sc)]
+    queue = [(0, sr, sc)]
 
     while queue:
-        # score, r, c = heapq.heappop(queue)
-        score, r, c = queue.popleft()
-        print(score, r, c)
+        score, r, c = heapq.heappop(queue)
         if (r, c) == end:
             return score
         for dr, dc in DIRS4:
@@ -69,22 +58,21 @@ def get_answer(n, m, bytes):
                 and grid[nr][nc] != "#"
                 and (nr, nc) not in visited
             ):
-                # heapq.heappush(queue, (new_score, nr, nc))
-                queue.append((new_score, nr, nc))
+                heapq.heappush(queue, (new_score, nr, nc))
                 visited.add((nr, nc))
 
-    print(f"{lst=}")
-    return min(lst)
+    return
 
 
 def main():
-    n = 6
-    m = 12
-    # n = 70
-    # m = 1024
-    bytes = get_data("test_input.txt")
-    print(bytes)
+    # n = 6
+    # m = 12
+    # file = "test_input.txt"
 
+    n = 70
+    m = 1024
+    file = "input.txt"
+    bytes = get_data(file)
     print(get_answer(n, m, bytes))
 
 
