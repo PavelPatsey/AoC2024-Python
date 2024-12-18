@@ -36,33 +36,43 @@ def print_grid(grid):
 
 
 def get_answer(n, m, bytes):
-    bytes_slice = bytes[0:m]
+    def bfs():
+        start = 0, 0
+        end = n, n
+
+        sr, sc = start
+        visited = set()
+        queue = deque()
+        queue.append((0, sr, sc))
+
+        while queue:
+            score, r, c = queue.popleft()
+            if (r, c) == end:
+                return score
+            for dr, dc in DIRS4:
+                nr, nc = r + dr, c + dc
+                new_score = score + 1
+                if (
+                    in_grid(nr, nc, grid)
+                    and grid[nr][nc] != "#"
+                    and (nr, nc) not in visited
+                ):
+                    queue.append((new_score, nr, nc))
+                    visited.add((nr, nc))
+
+        return
+
+    bytes_slice, tail = bytes[:m], bytes[m:]
+    tail = deque(tail)
     grid = get_grid(n, bytes_slice)
-
-    start = 0, 0
-    end = n, n
-
-    sr, sc = start
-    visited = set()
-    queue = deque()
-    queue.append((0, sr, sc))
-
-    while queue:
-        score, r, c = queue.popleft()
-        if (r, c) == end:
-            return score
-        for dr, dc in DIRS4:
-            nr, nc = r + dr, c + dc
-            new_score = score + 1
-            if (
-                in_grid(nr, nc, grid)
-                and grid[nr][nc] != "#"
-                and (nr, nc) not in visited
-            ):
-                queue.append((new_score, nr, nc))
-                visited.add((nr, nc))
-
-    return
+    res = bfs()
+    ans_1 = res
+    while tail and res:
+        x, y = tail.popleft()
+        grid[y][x] = "#"
+        res = bfs()
+    ans_2 = ",".join([str(i) for i in (x, y)])
+    return ans_1, ans_2
 
 
 def main():
@@ -73,8 +83,10 @@ def main():
     n = 70
     m = 1024
     file = "input.txt"
+
     bytes = get_data(file)
-    print(get_answer(n, m, bytes))
+    ans_1, ans_2 = get_answer(n, m, bytes)
+    print(ans_1, ans_2, sep="\n")
 
 
 if __name__ == "__main__":
