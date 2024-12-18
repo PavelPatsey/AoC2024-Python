@@ -62,21 +62,31 @@ def get_answer(n, m, bytes):
 
         return
 
-    bytes_slice = bytes[0:m]
+    bytes_slice, tail = bytes[:m], bytes[m:]
+    tail = deque(tail)
     grid = get_grid(n, bytes_slice)
+    res = bfs()
+    while tail and res:
+        x, y = tail.popleft()
+        # print(f"{(x,y)=} {(x,y)==(6,1)}")
+        grid[y][x] = "#"
+        res = bfs()
+        # print(f"{res=} {len(tail)=}")
+    return ",".join([str(i) for i in (x, y)])
 
 
 def main():
-    n = 6
-    m = 12
-    file = "test_input.txt"
+    # n = 6
+    # m = 12
+    # file = "test_input.txt"
 
-    # n = 70
-    # m = 1024
-    # file = "input.txt"
+    n = 70
+    m = 1024
+    file = "input.txt"
 
     bytes = get_data(file)
-    print(get_answer(n, m, bytes))
+    ans2 = get_answer(n, m, bytes)
+    print(ans2)
 
 
 if __name__ == "__main__":
