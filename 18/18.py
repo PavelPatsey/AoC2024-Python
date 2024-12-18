@@ -1,3 +1,4 @@
+import cProfile
 from collections import deque
 
 DIRS4 = (
@@ -90,4 +91,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    cProfile.run("main()")
