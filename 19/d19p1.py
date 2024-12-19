@@ -7,8 +7,17 @@ def get_data(input_file):
     return towels, designs
 
 
+def dfs(t, towels, cur_seq, design: str):
+    if not design.startswith(cur_seq):
+        return
+    if cur_seq == design:
+        return cur_seq
+
+
+
+
 def get_answer(towels, designs):
-    return
+    for d in designs
 
 
 def main():
