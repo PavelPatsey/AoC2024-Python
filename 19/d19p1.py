@@ -24,7 +24,8 @@ def is_possible(towels, design):
 
 
 def main():
-    towels, designs = get_data("input.txt")
+    file = "input.txt"
+    towels, designs = get_data(file)
     ans1 = sum(map(lambda x: is_possible(towels, x), designs))
     print(ans1)
 

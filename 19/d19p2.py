@@ -27,7 +27,8 @@ def combinations_number(towels, design):
 
 
 def main():
-    towels, designs = get_data("input.txt")
+    file = "input.txt"
+    towels, designs = get_data(file)
     ans2 = sum(map(lambda x: combinations_number(towels, x), designs))
     print(ans2)
 
