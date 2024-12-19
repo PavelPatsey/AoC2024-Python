@@ -1,3 +1,7 @@
+from functools import cache
+import cProfile
+
+
 def get_data(input_file):
     with open(input_file, "r") as file:
         data = file.read().strip()
@@ -7,24 +11,26 @@ def get_data(input_file):
     return towels, designs
 
 
-def dfs(t, towels, cur_seq, design: str):
-    if not design.startswith(cur_seq):
-        return
-    if cur_seq == design:
-        return cur_seq
+def is_possible(towels, design):
+    @cache
+    def dfs(cur_seq, design):
+        if not design.startswith(cur_seq):
+            return False
+        if cur_seq == design:
+            return True
+        return any((dfs(cur_seq + new_t, design) for new_t in towels))
 
-
+    return dfs("", design)
 
 
 def get_answer(towels, designs):
-    for d in designs
+    return sum(map(lambda x: is_possible(towels, x), designs))
 
 
 def main():
-    towels, designs = get_data("test_input.txt")
-    print(towels, designs)
+    towels, designs = get_data("input.txt")
     print(get_answer(towels, designs))
 
 
 if __name__ == "__main__":
-    main()
+    cProfile.run("main()")
