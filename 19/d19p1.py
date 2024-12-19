@@ -1,5 +1,5 @@
-from functools import cache
 import cProfile
+from functools import cache
 
 
 def get_data(input_file):
@@ -23,13 +23,10 @@ def is_possible(towels, design):
     return dfs("", design)
 
 
-def get_answer(towels, designs):
-    return sum(map(lambda x: is_possible(towels, x), designs))
-
-
 def main():
     towels, designs = get_data("input.txt")
-    print(get_answer(towels, designs))
+    ans1 = sum(map(lambda x: is_possible(towels, x), designs))
+    print(ans1)
 
 
 if __name__ == "__main__":

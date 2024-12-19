@@ -23,17 +23,13 @@ def ways_number(towels, design):
                 n += recursion(new_tail)
         return n
 
-    res = recursion(design)
-    return res
-
-
-def get_answer(towels, designs):
-    return sum(map(lambda x: ways_number(towels, x), designs))
+    return recursion(design)
 
 
 def main():
     towels, designs = get_data("input.txt")
-    print(get_answer(towels, designs))
+    ans2 = sum(map(lambda x: ways_number(towels, x), designs))
+    print(ans2)
 
 
 if __name__ == "__main__":
