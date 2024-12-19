@@ -11,7 +11,7 @@ def get_data(input_file):
     return towels, designs
 
 
-def ways_number(towels, design):
+def combinations_number(towels, design):
     @cache
     def recursion(tail: str):
         if tail == "":
@@ -28,7 +28,7 @@ def ways_number(towels, design):
 
 def main():
     towels, designs = get_data("input.txt")
-    ans2 = sum(map(lambda x: ways_number(towels, x), designs))
+    ans2 = sum(map(lambda x: combinations_number(towels, x), designs))
     print(ans2)
 
 

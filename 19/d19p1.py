@@ -13,14 +13,14 @@ def get_data(input_file):
 
 def is_possible(towels, design):
     @cache
-    def recursion(cur_seq, design):
+    def dfs(cur_seq, design):
         if not design.startswith(cur_seq):
             return False
         if cur_seq == design:
             return True
-        return any((recursion(cur_seq + new_t, design) for new_t in towels))
+        return any((dfs(cur_seq + new_t, design) for new_t in towels))
 
-    return recursion("", design)
+    return dfs("", design)
 
 
 def main():
