@@ -9,7 +9,8 @@ def get_answer(data):
 
 
 def main():
-    data = get_data("test_input.txt")
+    file = "test_input.txt"
+    data = get_data(file)
     print(data)
     print(get_answer(data))
 
