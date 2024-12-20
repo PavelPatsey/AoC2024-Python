@@ -32,18 +32,15 @@ def in_grid(r, c, grid):
     return 0 <= r < rows and 0 <= c < cols
 
 
-def get_answer(grid):
-    res = None
-    sr, sc = get_start(grid)
+def get_score_without_cheat(grid, start):
+    sr, sc = start
     visited = set()
     queue = deque()
     queue.append((0, sr, sc, 0))
 
     while queue:
         item = queue.popleft()
-
         score, r, c, cheat = item
-        print(f"{item=}")
 
         if grid[r][c] == "E":
             res = score
@@ -53,24 +50,21 @@ def get_answer(grid):
             nr, nc = r + dr, c + dc
             new_score = score + 1
 
-            # if grid[nr][nc] != "#":
-            #     new_cheat = cheat - 1
-            # else:
-            #     new_cheat = cheat
-
             new_cheat = cheat
             new_item = new_score, nr, nc, new_cheat
-
-            # if (
-            #     grid[nr][nc] != "#" or grid[nr][nc] == "#" and new_cheat > 0
-            # ) and new_item not in visited:
-            #     queue.append(new_item)
 
             if grid[nr][nc] != "#" and new_item not in visited:
                 queue.append(new_item)
                 visited.add(new_item)
 
     return res
+
+
+def get_answer(grid):
+    res = None
+    start = get_start(grid)
+    score_without_cheat = get_score_without_cheat(grid, start)
+    return score_without_cheat
 
 
 def main():
