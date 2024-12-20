@@ -67,11 +67,10 @@ def get_score(grid, start):
         for dr, dc in DIRS4:
             nr, nc = r + dr, c + dc
             new_score = score + 1
-            new_item = new_score, nr, nc
 
-            if grid[nr][nc] != "#" and new_item not in visited:
-                queue.append(new_item)
-                visited.add(new_item)
+            if grid[nr][nc] != "#" and (nr, nc) not in visited:
+                queue.append((new_score, nr, nc))
+                visited.add((nr, nc))
 
     return res
 
@@ -94,15 +93,14 @@ def get_score_with_limit(grid, start, score_limit):
         for dr, dc in DIRS4:
             nr, nc = r + dr, c + dc
             new_score = score + 1
-            new_item = new_score, nr, nc
 
             if (
                 grid[nr][nc] != "#"
-                and new_item not in visited
+                and (nr, nc) not in visited
                 and new_score < score_limit
             ):
-                queue.append(new_item)
-                visited.add(new_item)
+                queue.append((new_score, nr, nc))
+                visited.add((nr, nc))
 
     return res
 
@@ -110,6 +108,8 @@ def get_score_with_limit(grid, start, score_limit):
 def get_answer(grid, limit):
     start = get_start(grid)
     walls = get_walls(grid)
+    max_score = get_score(grid, start)
+    print(f"{max_score=}")
     res = []
     for r, c in walls:
         new_grid = deepcopy(grid)
