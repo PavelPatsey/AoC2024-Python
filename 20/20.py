@@ -73,7 +73,7 @@ def get_answer(grid, diff_max, manh_dist_limit):
     assert scores_from_end[(start[0], start[1])] == base_score
 
     dirs = get_dirs(manh_dist_limit)
-    res = []
+    res = 0
 
     rows = len(grid)
     cols = len(grid[0])
@@ -89,15 +89,14 @@ def get_answer(grid, diff_max, manh_dist_limit):
                     continue
                 start_p1 = scores_from_start[p1]
                 p1_p2 = abs(dr) + abs(dc)
-                assert 1 < p1_p2 <= manh_dist_limit
                 p2_end = scores_from_end[p2]
                 score = start_p1 + p1_p2 + p2_end
                 if score < base_score:
                     diff = base_score - score
                     if diff >= diff_max:
-                        res.append(score)
+                        res += 1
 
-    return len(res)
+    return res
 
 
 def main():
