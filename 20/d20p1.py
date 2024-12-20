@@ -1,6 +1,7 @@
 import cProfile
 import heapq
-from collections import deque
+from collections import deque, Counter
+from copy import deepcopy
 
 DIRS4 = (
     (0, -1),
@@ -32,7 +33,13 @@ def get_walls(grid):
     cols = len(grid[0])
     for r in range(rows):
         for c in range(cols):
-            if grid[r][c] == "#":
+            if (
+                r != 0
+                and r != rows - 1
+                and c != 0
+                and c != cols - 1
+                and grid[r][c] == "#"
+            ):
                 walls.add((r, c))
     return walls
 
@@ -69,58 +76,67 @@ def get_score(grid, start):
     return res
 
 
-def get_scores_less_than_limit(grid, start, score_limit):
-    res = []
+def get_score_with_limit(grid, start, score_limit):
     sr, sc = start
     visited = set()
     queue = deque()
-    queue.append((0, sr, sc, 1))
+    queue.append((0, sr, sc))
+    res = None
 
     while queue:
         node = queue.popleft()
-        score, r, c, cheat = node
-        # print(f"{item=}")
+        score, r, c = node
 
         if grid[r][c] == "E":
-            print(f"{score=}")
-            res.append(score)
+            res = score
+            break
 
         for dr, dc in DIRS4:
             nr, nc = r + dr, c + dc
             new_score = score + 1
-            new_cheat = cheat
-            if in_grid(nr, nc, grid) and grid[nr][nc] == "#":
-                new_cheat -= 1
-            new_node = new_score, nr, nc, new_cheat
+            new_item = new_score, nr, nc
 
             if (
-                in_grid(nr, nc, grid)
-                and (grid[nr][nc] != "#" or grid[nr][nc] == "#" and new_cheat >= 0)
-                and new_node not in visited
+                grid[nr][nc] != "#"
+                and new_item not in visited
                 and new_score < score_limit
             ):
-                queue.append(new_node)
-                visited.add(new_node)
+                queue.append(new_item)
+                visited.add(new_item)
 
-    print(f"{res=}")
-    mapped = list(sorted(map(lambda x: score_limit - x, res)))
-    print(f"{mapped=}")
-    return mapped
-
-
-def get_answer(grid):
-    start = get_start(grid)
-    score_limit = get_score(grid, start)
-    print(f"{score_limit=}")
-    res = get_scores_less_than_limit(grid, start, score_limit)
     return res
+
+
+def get_answer(grid, limit):
+    start = get_start(grid)
+    walls = get_walls(grid)
+    res = []
+    for r, c in walls:
+        new_grid = deepcopy(grid)
+        new_grid[r][c] = "."
+        score = get_score_with_limit(new_grid, start, limit)
+        # print(f"{score=}")
+        if score:
+            res.append(score)
+    mapped = sorted(list(map(lambda x: limit - x, res)))
+    print(f"{mapped=}")
+    counter = Counter(mapped)
+    print(counter)
+    print(sorted(counter.values()))
+    return sum(counter.values())
 
 
 def main():
     file = "test_input.txt"
+    limit = 84
+
+    # file = "input.txt"
+    # limit = 100
+
     grid = get_data(file)
-    print(get_answer(grid))
+    print(get_answer(grid, limit))
 
 
 if __name__ == "__main__":
-    main()
+    # main()
+    cProfile.run("main()")
