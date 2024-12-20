@@ -1,6 +1,6 @@
 import cProfile
 import heapq
-from collections import deque, Counter
+from collections import Counter, deque
 from copy import deepcopy
 
 DIRS4 = (
@@ -143,5 +143,4 @@ def main():
 
 
 if __name__ == "__main__":
-    # main()
     cProfile.run("main()")
