@@ -36,22 +36,20 @@ def in_grid(r, c, grid):
 
 def get_scores_from(grid, start):
     sr, sc = start
-    scores_dict = {}
-    queue = deque()
-    queue.append((0, sr, sc))
+    scores_dict = {(sr, sc): 0}
+    queue = deque([(0, sr, sc)])
 
     while queue:
-        score, r, c = queue.popleft()
-        if (r, c) in scores_dict:
-            continue
-        scores_dict[(r, c)] = score
+        node = queue.popleft()
+        score, r, c = node
 
         for dr, dc in DIRS4:
             nr, nc = r + dr, c + dc
             new_score = score + 1
 
-            if grid[nr][nc] != "#":
+            if grid[nr][nc] != "#" and (nr, nc) not in scores_dict:
                 queue.append((new_score, nr, nc))
+                scores_dict[(nr, nc)] = new_score
 
     return scores_dict
 
