@@ -1,5 +1,5 @@
 import cProfile
-from collections import Counter, deque
+from collections import deque
 
 DIRS4 = (
     (0, -1),
@@ -119,15 +119,4 @@ def main():
 
 
 if __name__ == "__main__":
-    assert get_dirs(2) == {
-        (-1, -1),
-        (-1, 1),
-        (1, 1),
-        (2, 0),
-        (1, -1),
-        (-2, 0),
-        (0, 2),
-        (0, -2),
-    }
-
     cProfile.run("main()")

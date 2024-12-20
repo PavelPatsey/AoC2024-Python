@@ -1,5 +1,4 @@
 import cProfile
-import heapq
 from collections import Counter, deque
 from copy import deepcopy
 
