@@ -50,7 +50,7 @@ def in_grid(r, c, grid):
     return 0 <= r < rows and 0 <= c < cols
 
 
-def get_score(grid, start):
+def get_max_score(grid, start):
     sr, sc = start
     visited = set()
     queue = deque()
@@ -61,8 +61,7 @@ def get_score(grid, start):
         score, r, c = node
 
         if grid[r][c] == "E":
-            res = score
-            break
+            return score
 
         for dr, dc in DIRS4:
             nr, nc = r + dr, c + dc
@@ -72,7 +71,7 @@ def get_score(grid, start):
                 queue.append((new_score, nr, nc))
                 visited.add((nr, nc))
 
-    return res
+    return
 
 
 def get_score_with_limit(grid, start, score_limit):
@@ -97,7 +96,7 @@ def get_score_with_limit(grid, start, score_limit):
             if (
                 grid[nr][nc] != "#"
                 and (nr, nc) not in visited
-                and new_score < score_limit
+                and new_score <= score_limit
             ):
                 queue.append((new_score, nr, nc))
                 visited.add((nr, nc))
@@ -105,36 +104,42 @@ def get_score_with_limit(grid, start, score_limit):
     return res
 
 
-def get_answer(grid, limit):
+def get_answer(grid, save):
     start = get_start(grid)
-    walls = get_walls(grid)
-    max_score = get_score(grid, start)
+    max_score = get_max_score(grid, start)
+    score_limit = max_score - save
     print(f"{max_score=}")
+    print(f"{score_limit=}")
+    walls = get_walls(grid)
+    print(f"{len(walls)=}")
     res = []
+    i = 0
     for r, c in walls:
         new_grid = deepcopy(grid)
         new_grid[r][c] = "."
-        score = get_score_with_limit(new_grid, start, limit)
+        score = get_score_with_limit(new_grid, start, score_limit)
         # print(f"{score=}")
         if score:
             res.append(score)
-    mapped = sorted(list(map(lambda x: limit - x, res)))
-    print(f"{mapped=}")
-    counter = Counter(mapped)
+        i += 1
+        if i % 100 == 0:
+            print(f"{i=} {score=}")
+
+    counter = Counter(res)
     print(counter)
     print(sorted(counter.values()))
     return sum(counter.values())
 
 
 def main():
-    file = "test_input.txt"
-    limit = 84
+    # file = "test_input.txt"
+    # save = 1
 
-    # file = "input.txt"
-    # limit = 100
+    file = "input.txt"
+    save = 100
 
     grid = get_data(file)
-    print(get_answer(grid, limit))
+    print(get_answer(grid, save))
 
 
 if __name__ == "__main__":
