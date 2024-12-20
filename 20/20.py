@@ -58,11 +58,11 @@ def get_scores_from(grid, start):
     return scores_dict
 
 
-def get_dist(p1, p2):
-    r1, c1 = p1
-    r2, c2 = p2
-    dist = abs(r2 - r1) + abs(c2 - c1)
-    return dist
+# def get_dist(p1, p2):
+#     r1, c1 = p1
+#     r2, c2 = p2
+#     dist = abs(r2 - r1) + abs(c2 - c1)
+#     return dist
 
 
 def get_dirs(manh_dist_limit):
@@ -74,19 +74,18 @@ def get_dirs(manh_dist_limit):
     return dirs
 
 
-def get_answer(grid, save, cheats):
+def get_answer(grid, diff_max, manh_dist_limit):
     start, end = get_start_end(grid)
     scores_from_start = get_scores_from(grid, start)
     scores_from_end = get_scores_from(grid, end)
     base_score = scores_from_start[(end[0], end[1])]
     assert scores_from_start[(end[0], end[1])] == base_score
     assert scores_from_end[(start[0], start[1])] == base_score
-    score_limit = base_score - save
 
     print(f"{base_score=}")
-    print(f"{score_limit=}")
+    print(f"{diff_max=}")
 
-    dirs = get_dirs(cheats)
+    dirs = get_dirs(manh_dist_limit)
     res = []
 
     rows = len(grid)
@@ -102,36 +101,34 @@ def get_answer(grid, save, cheats):
                 if p2 not in scores_from_end:
                     continue
                 start_p1 = scores_from_start[p1]
-                p1_p2 = get_dist(p1, p2)
-                if p1_p2 > cheats + 1:
-                    continue
+                # p1_p2 = get_dist(p1, p2)
+                p1_p2 = abs(dr) + abs(dc)
+                assert 1 < p1_p2 <= manh_dist_limit
                 p2_end = scores_from_end[p2]
                 score = start_p1 + p1_p2 + p2_end
-                if score < score_limit:
+                if 0 < base_score - score < diff_max:
                     res.append(score)
 
-    # counter = Counter(res)
-    # print(counter)
-    # print(sorted(counter.values()))
+    counter = Counter(res)
+    print(counter)
+    print(sorted(counter.values()))
     # return sum(counter.values())
 
     mapped = sorted(map(lambda x: base_score - x, res))
-    counter = Counter(mapped)
-    print(counter)
-    print(sorted(counter.values()))
+    counter_2 = Counter(mapped)
+    print(counter_2)
+    print(sorted(counter_2.values()))
     return sum(counter.values())
 
 
 def main():
     file = "test_input.txt"
-    save = 0
-
-    # file = "input.txt"
-    # save = 100
+    file = "input.txt"
 
     grid = get_data(file)
-    cheats = 2
-    print(get_answer(grid, save, cheats))
+    manh_dist_limit = 2
+    diff_max = 100
+    print(get_answer(grid, diff_max, manh_dist_limit))
 
 
 if __name__ == "__main__":
