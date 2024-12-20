@@ -41,16 +41,17 @@ def get_scores_from(grid, start):
     queue.append((0, sr, sc))
 
     while queue:
-        node = queue.popleft()
-        score, r, c = node
+        score, r, c = queue.popleft()
+        if (r, c) in scores_dict:
+            continue
+        scores_dict[(r, c)] = score
 
         for dr, dc in DIRS4:
             nr, nc = r + dr, c + dc
             new_score = score + 1
 
-            if grid[nr][nc] != "#" and (nr, nc) not in scores_dict:
+            if grid[nr][nc] != "#":
                 queue.append((new_score, nr, nc))
-                scores_dict[(nr, nc)] = new_score
 
     return scores_dict
 
@@ -129,5 +130,4 @@ if __name__ == "__main__":
         (0, -2),
     }
 
-    main()
-    # cProfile.run("main()")
+    cProfile.run("main()")
