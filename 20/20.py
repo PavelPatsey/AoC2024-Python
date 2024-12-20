@@ -97,20 +97,25 @@ def get_answer(grid, diff_max, manh_dist_limit):
                     if diff >= diff_max:
                         res.append(score)
 
-    counter = Counter(res)
-    return sum(counter.values())
+    return len(res)
 
 
 def main():
-    file = "test_input.txt"
-    diff_max = 0
+    # file = "test_input.txt"
+    # diff_max = 0
 
     file = "input.txt"
     diff_max = 100
 
     grid = get_data(file)
     manh_dist_limit = 2
-    print(get_answer(grid, diff_max, manh_dist_limit))
+
+    ans1 = get_answer(grid, diff_max, manh_dist_limit)
+    print(f"{ans1=}")
+
+    manh_dist_limit = 20
+    ans2 = get_answer(grid, diff_max, manh_dist_limit)
+    print(f"{ans2=}")
 
 
 if __name__ == "__main__":
@@ -125,4 +130,5 @@ if __name__ == "__main__":
         (0, -2),
     }
 
-    cProfile.run("main()")
+    main()
+    # cProfile.run("main()")
