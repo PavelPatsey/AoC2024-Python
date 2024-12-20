@@ -12,7 +12,7 @@ DIRS4 = (
 def get_data(input_file):
     with open(input_file, "r") as file:
         data = file.read().splitlines()
-    return [[x for x in line] for line in data]
+    return data
 
 
 def get_start_end(grid):
@@ -28,20 +28,13 @@ def get_start_end(grid):
     return start, end
 
 
-def in_grid(r, c, grid):
-    rows = len(grid)
-    cols = len(grid[0])
-    return 0 <= r < rows and 0 <= c < cols
-
-
-def get_scores_from(grid, start):
-    sr, sc = start
+def get_scores_from(grid, node):
+    sr, sc = node
     scores_dict = {(sr, sc): 0}
     queue = deque([(0, sr, sc)])
 
     while queue:
-        node = queue.popleft()
-        score, r, c = node
+        score, r, c = queue.popleft()
 
         for dr, dc in DIRS4:
             nr, nc = r + dr, c + dc
@@ -63,7 +56,7 @@ def get_dirs(manh_dist_limit):
     return dirs
 
 
-def get_answer(grid, diff_max, manh_dist_limit):
+def get_answer(grid, save_diff, manh_dist_limit):
     start, end = get_start_end(grid)
     scores_from_start = get_scores_from(grid, start)
     scores_from_end = get_scores_from(grid, end)
@@ -90,29 +83,28 @@ def get_answer(grid, diff_max, manh_dist_limit):
                 p1_p2 = abs(dr) + abs(dc)
                 p2_end = scores_from_end[p2]
                 score = start_p1 + p1_p2 + p2_end
-                if score < base_score:
-                    diff = base_score - score
-                    if diff >= diff_max:
-                        res += 1
+                diff = base_score - score
+                if score < base_score and diff >= save_diff:
+                    res += 1
 
     return res
 
 
 def main():
     # file = "test_input.txt"
-    # diff_max = 0
+    # save_diff = 0
 
     file = "input.txt"
-    diff_max = 100
+    save_diff = 100
 
     grid = get_data(file)
     manh_dist_limit = 2
 
-    ans1 = get_answer(grid, diff_max, manh_dist_limit)
+    ans1 = get_answer(grid, save_diff, manh_dist_limit)
     print(f"{ans1=}")
 
     manh_dist_limit = 20
-    ans2 = get_answer(grid, diff_max, manh_dist_limit)
+    ans2 = get_answer(grid, save_diff, manh_dist_limit)
     print(f"{ans2=}")
 
 
