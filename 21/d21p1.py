@@ -129,6 +129,7 @@ def convert_code(code):
     conv_seqs_2 = []
     for seq_1 in conv_seqs_1:
         conv_seqs_2.extend(convert_seq(seq_1, DIR_KP))
+    conv_seqs_2 = filter_by_duplicates(conv_seqs_2)
 
     conv_seqs_3 = []
     for seq_2 in conv_seqs_2:
