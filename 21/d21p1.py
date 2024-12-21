@@ -155,7 +155,7 @@ def convert_code(code):
 
 
 def main():
-    file = "test_input.txt"
+    file = "input.txt"
     codes = get_data(file)
     ans1 = sum(map(convert_code, codes))
     print(f"{ans1=}")
