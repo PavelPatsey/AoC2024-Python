@@ -97,9 +97,15 @@ def get_len_without_duplicates(seq):
         prev = curr
     return res
 
-    # f = get_len_without_duplicates
-    # mapped = list(map(lambda x: (f(x), x), all_seqs))
-    # print(f"{mapped=}")
+
+def filter_by_duplicates(seqs):
+    """Отфильтровать последовательности с учетом дубликатов"""
+    f = get_len_without_duplicates
+    required_length = float("inf")
+    for s in seqs:
+        required_length = min(required_length, f(s))
+    filtered = list(filter(lambda x: f(x) == required_length, seqs))
+    return filtered
 
 
 def convert_seq(seq, keypad) -> List:
@@ -118,6 +124,7 @@ def convert_seq(seq, keypad) -> List:
 
 def convert_code(code):
     conv_seqs_1 = convert_seq(code, NUM_KP)
+    conv_seqs_1 = filter_by_duplicates(conv_seqs_1)
 
     conv_seqs_2 = []
     for seq_1 in conv_seqs_1:
