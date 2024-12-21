@@ -97,19 +97,30 @@ def get_len_without_duplicates(seq):
         prev = curr
     return res
 
+    # f = get_len_without_duplicates
+    # mapped = list(map(lambda x: (f(x), x), all_seqs))
+    # print(f"{mapped=}")
 
-def convert_char(new_start, char, keypad):
-    """Получить последовательности и выбрать самую короткую в перспективе"""
-    all_seqs, end = bfs(new_start, char, keypad)
+
+def convert_char(start, char, keypad):
+    """Получить последовательности"""
+    all_seqs, end = dfs(start, char, keypad)
+
+    return all_seqs, end
 
 
 def convert_seq(seq, keypad):
-    new_start = get_start(keypad)
-    converted_seq = ""
+    """Из одной последовательности получить возможные последовательности"""
+    start = get_start(keypad)
+    converted_seqs = {""}
     for char in seq:
-        converted_char, new_start = bfs(new_start, char, keypad)
-        converted_seq += converted_char
-    return converted_seq
+        all_char_seqs, start = dfs(start, char, keypad)
+        new_converted_seq = set()
+        for seq in converted_seqs:
+            for char_seq in all_char_seqs:
+                new_converted_seq.add(seq + char_seq)
+        converted_seqs = new_converted_seq
+    return converted_seqs
 
 
 def convert_code(code):
@@ -156,14 +167,18 @@ if __name__ == "__main__":
 
     assert get_len_without_duplicates("123") == 3
     assert get_len_without_duplicates("1233") == 3
+    assert get_len_without_duplicates("A^A^>^AvvvA") == 9
 
     assert dfs(get_start(NUM_KP), "0", NUM_KP) == ({"<A"}, (3, 1))
     assert dfs(get_start(NUM_KP), "A", NUM_KP) == ({"A"}, (3, 2))
     assert dfs(get_start(DIR_KP), "<", DIR_KP) == ({"v<<A", "<v<A"}, (1, 0))
 
-    # conv_seq = convert_seq("029A", NUM_KP)
-    # assert conv_seq in {"<A^A>^^AvvvA", "<A^A^>^AvvvA", "<A^A^^>AvvvA"}
-    #
+    assert convert_seq("029A", NUM_KP) == {
+        "<A^A>^^AvvvA",
+        "<A^A^>^AvvvA",
+        "<A^A^^>AvvvA",
+    }
+
     # conv_seq_2 = convert_seq("v<<A>>^A<A>AvA<^AA>A<vAAA>^A", DIR_KP)
     # test_res = "<vA<AA>>^AvAA<^A>A<v<A>>^AvA^A<vA>^A<v<A>^A>AAvA^A<v<A>A>^AAAvA<^A>A"
     # assert len(conv_seq_2) == len(test_res)
