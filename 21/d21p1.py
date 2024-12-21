@@ -1,4 +1,4 @@
-from collections import deque
+import cProfile
 from functools import cache
 from typing import List, Set
 
@@ -178,6 +178,16 @@ if __name__ == "__main__":
         "<A^A^^>AvvvA",
     }
 
+    print("test 1")
     assert convert_code("029A") == 68 * 29
+    print("test 2")
+    assert convert_code("980A") == 60 * 980
+    print("test 3")
+    assert convert_code("179A") == 68 * 179
+    print("test 4")
+    assert convert_code("456A") == 64 * 456
+    print("test 5")
+    assert convert_code("379A") == 64 * 379
 
-    main()
+    print("start main()")
+    cProfile.run("main()")
