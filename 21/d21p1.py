@@ -43,31 +43,64 @@ def get_start(keypad):
 
 
 @cache
-def bfs(start, char, keypad):
+def get_end(char, keypad):
+    rows = len(keypad)
+    cols = len(keypad[0])
+    for r in range(rows):
+        for c in range(cols):
+            if keypad[r][c] == char:
+                return r, c
+    assert False
+
+
+def get_dist(start, end):
+    """Manhattan distance"""
     sr, sc = start
-    visited = {start}
-    queue = deque([(sr, sc, "")])
+    er, ec = end
+    return abs(er - sr) + abs(ec - sc)
 
-    while queue:
-        r, c, track = queue.popleft()
+
+@cache
+def dfs(start, char, keypad):
+    """Получить последовательности соответствующие Manhattan distance"""
+    sr, sc = start
+    end = get_end(char, keypad)
+    max_dist = get_dist(start, end)
+    all_seqs = set()
+
+    def _dfs(r, c, seq):
+        if len(seq) > max_dist:
+            return
+        if not in_keypad(r, c, keypad):
+            return
+        if keypad[r][c] == "#":
+            return
         if keypad[r][c] == char:
-            # t_a = track + "A"
-            # print(f"{t_a =}")
-            return track + "A", (r, c)
-
+            assert len(seq) == max_dist
+            all_seqs.add(seq + "A")
         for key, drt in DIRS4_dict.items():
             dr, dc = drt
             nr, nc = r + dr, c + dc
+            _dfs(nr, nc, seq + key)
 
-            if (
-                in_keypad(nr, nc, keypad)
-                and keypad[nr][nc] != "#"
-                and (nr, nc) not in visited
-            ):
-                new_track = track + key
-                queue.append((nr, nc, new_track))
-                visited.add((nr, nc))
-    assert False
+    _dfs(start[0], start[1], "")
+    return all_seqs, end
+
+
+def get_len_without_duplicates(seq):
+    """Получить длину без дубликатов"""
+    prev = seq[0]
+    res = 1
+    for curr in seq[1:]:
+        if curr != prev:
+            res += 1
+        prev = curr
+    return res
+
+
+def convert_char(new_start, char, keypad):
+    """Получить последовательности и выбрать самую короткую в перспективе"""
+    all_seqs, end = bfs(new_start, char, keypad)
 
 
 def convert_seq(seq, keypad):
@@ -119,19 +152,23 @@ def main():
 
 
 if __name__ == "__main__":
-    assert bfs(get_start(NUM_KP), "0", NUM_KP) == ("<A", (3, 1))
-    assert bfs(get_start(NUM_KP), "A", NUM_KP) == ("A", (3, 2))
+    assert get_dist((3, 2), (1, 1)) == 3
 
-    assert bfs(get_start(DIR_KP), "<", DIR_KP) == ("v<<A", (1, 0))
+    assert get_len_without_duplicates("123") == 3
+    assert get_len_without_duplicates("1233") == 3
 
-    conv_seq = convert_seq("029A", NUM_KP)
-    assert conv_seq in {"<A^A>^^AvvvA", "<A^A^>^AvvvA", "<A^A^^>AvvvA"}
+    assert dfs(get_start(NUM_KP), "0", NUM_KP) == ({"<A"}, (3, 1))
+    assert dfs(get_start(NUM_KP), "A", NUM_KP) == ({"A"}, (3, 2))
+    assert dfs(get_start(DIR_KP), "<", DIR_KP) == ({"v<<A", "<v<A"}, (1, 0))
 
-    conv_seq_2 = convert_seq("v<<A>>^A<A>AvA<^AA>A<vAAA>^A", DIR_KP)
-    test_res = "<vA<AA>>^AvAA<^A>A<v<A>>^AvA^A<vA>^A<v<A>^A>AAvA^A<v<A>A>^AAAvA<^A>A"
-    assert len(conv_seq_2) == len(test_res)
+    # conv_seq = convert_seq("029A", NUM_KP)
+    # assert conv_seq in {"<A^A>^^AvvvA", "<A^A^>^AvvvA", "<A^A^^>AvvvA"}
+    #
+    # conv_seq_2 = convert_seq("v<<A>>^A<A>AvA<^AA>A<vAAA>^A", DIR_KP)
+    # test_res = "<vA<AA>>^AvAA<^A>A<v<A>>^AvA^A<vA>^A<v<A>^A>AAvA^A<v<A>A>^AAAvA<^A>A"
+    # assert len(conv_seq_2) == len(test_res)
 
-    print(convert_code("029A"))
+    # print(convert_code("029A"))
     # print(68 * 29)
     # assert convert_code("029A") == 68 * 29
-    main()
+    # main()
