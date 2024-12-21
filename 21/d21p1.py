@@ -102,23 +102,16 @@ def get_len_without_duplicates(seq):
     # print(f"{mapped=}")
 
 
-def convert_char(start, char, keypad) -> Set:
-    """Получить последовательности"""
-    all_seqs_lst, end = dfs(start, char, keypad)
-    all_seqs_set = set(all_seqs_lst)
-    return all_seqs_set, end
-
-
-def convert_seq(seq, keypad) -> Set:
+def convert_seq(seq, keypad) -> List:
     """Из одной последовательности получить возможные последовательности"""
     start = get_start(keypad)
-    converted_seqs = {""}
+    converted_seqs = [""]
     for char in seq:
-        all_char_seqs, start = convert_char(start, char, keypad)
-        new_converted_seq = set()
+        all_char_seqs, start = dfs(start, char, keypad)
+        new_converted_seq = []
         for seq in converted_seqs:
             for char_seq in all_char_seqs:
-                new_converted_seq.add(seq + char_seq)
+                new_converted_seq.append(seq + char_seq)
         converted_seqs = new_converted_seq
     return converted_seqs
 
@@ -129,15 +122,15 @@ def convert_code(code):
     conv_seqs_1 = convert_seq(code, NUM_KP)
     # print(f"{conv_seqs_1=}")
 
-    conv_seqs_2 = set()
+    conv_seqs_2 = []
     for seq_1 in conv_seqs_1:
-        conv_seqs_2.update(convert_seq(seq_1, DIR_KP))
+        conv_seqs_2.extend(convert_seq(seq_1, DIR_KP))
     # print(f"{conv_seqs_2=}")
     # assert "v<<A>>^A<A>AvA<^AA>A<vAAA>^A" in conv_seqs_2
 
-    conv_seqs_3 = set()
+    conv_seqs_3 = []
     for seq_2 in conv_seqs_2:
-        conv_seqs_3.update(convert_seq(seq_2, DIR_KP))
+        conv_seqs_3.extend(convert_seq(seq_2, DIR_KP))
     # print(f"{conv_seqs_3=}")
     # assert (
     #     "<vA<AA>>^AvAA<^A>A<v<A>>^AvA^A<vA>^A<v<A>^A>AAvA^A<v<A>A>^AAAvA<^A>A"
@@ -168,11 +161,11 @@ if __name__ == "__main__":
     assert get_len_without_duplicates("1233") == 3
     assert get_len_without_duplicates("A^A^>^AvvvA") == 9
 
-    assert convert_char(get_start(NUM_KP), "0", NUM_KP) == ({"<A"}, (3, 1))
-    assert convert_char(get_start(NUM_KP), "A", NUM_KP) == ({"A"}, (3, 2))
-    assert convert_char(get_start(DIR_KP), "<", DIR_KP) == ({"v<<A", "<v<A"}, (1, 0))
+    assert dfs(get_start(NUM_KP), "0", NUM_KP) == (["<A"], (3, 1))
+    assert dfs(get_start(NUM_KP), "A", NUM_KP) == (["A"], (3, 2))
+    assert dfs(get_start(DIR_KP), "<", DIR_KP) == (["v<<A", "<v<A"], (1, 0))
 
-    assert convert_seq("029A", NUM_KP) == {
+    assert set(convert_seq("029A", NUM_KP)) == {
         "<A^A>^^AvvvA",
         "<A^A^>^AvvvA",
         "<A^A^^>AvvvA",
