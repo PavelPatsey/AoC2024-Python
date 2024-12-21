@@ -8,17 +8,17 @@ DIRS4_dict = {
     ">": (0, 1),
 }
 
-NUM_KP = [
+NUM_KP = (
     "789",
     "456",
     "123",
     "#0A",
-]
+)
 
-DIR_KP = [
+DIR_KP = (
     "#^A",
     "<v>",
-]
+)
 
 
 def get_data(input_file):
@@ -42,6 +42,7 @@ def get_start(keypad):
         raise Exception("Invalid keypad!")
 
 
+@cache
 def bfs(start, char, keypad):
     sr, sc = start
     visited = {start}
@@ -69,13 +70,41 @@ def bfs(start, char, keypad):
     assert False
 
 
-def convert(seq, keypad):
+def convert_seq(seq, keypad):
     new_start = get_start(keypad)
     converted_seq = ""
     for char in seq:
         converted_char, new_start = bfs(new_start, char, keypad)
         converted_seq += converted_char
     return converted_seq
+
+
+def convert_code(code):
+    code = "029A"
+    print(f"{code=}")
+
+    converted_1 = convert_seq(code, NUM_KP)
+    print(f"{converted_1=} {len(converted_1)=}")
+    assert len(converted_1) == len("<A^A>^^AvvvA")
+
+    converted_2 = convert_seq(converted_1, DIR_KP)
+    print(f"{converted_2=} {len(converted_2)=}")
+    assert len(converted_2) == len("v<<A>>^A<A>AvA<^AA>A<vAAA>^A")
+
+    converted_3 = convert_seq(converted_2, DIR_KP)
+    print(f"{converted_3=} {len(converted_3)=}")
+
+    doljno_byt = len(
+        "<vA<AA>>^AvAA<^A>A<v<A>>^AvA^A<vA>^A<v<A>^A>AAvA^A<v<A>A>^AAAvA<^A>A"
+    )
+    # a 'v<A<AA>^>AvA^<Av>A^Av<<A>^>AvA^Av<<A>^>AAv<A>A^A<A>Av<A<A>^>AAA<Av>A^A'
+    print(f"{doljno_byt=}")
+    assert len(converted_3) == len(
+        "<vA<AA>>^AvAA<^A>A<v<A>>^AvA^A<vA>^A<v<A>^A>AAvA^A<v<A>A>^AAAvA<^A>A"
+    )
+
+    code_num = int(code[:-1])
+    return code_num * len(converted_3)
 
 
 def get_answer(data):
@@ -95,11 +124,14 @@ if __name__ == "__main__":
 
     assert bfs(get_start(DIR_KP), "<", DIR_KP) == ("v<<A", (1, 0))
 
-    conv_seq = convert("029A", NUM_KP)
+    conv_seq = convert_seq("029A", NUM_KP)
     assert conv_seq in {"<A^A>^^AvvvA", "<A^A^>^AvvvA", "<A^A^^>AvvvA"}
 
-    conv_seq_2 = convert("v<<A>>^A<A>AvA<^AA>A<vAAA>^A", DIR_KP)
+    conv_seq_2 = convert_seq("v<<A>>^A<A>AvA<^AA>A<vAAA>^A", DIR_KP)
     test_res = "<vA<AA>>^AvAA<^A>A<v<A>>^AvA^A<vA>^A<v<A>^A>AAvA^A<v<A>A>^AAAvA<^A>A"
     assert len(conv_seq_2) == len(test_res)
 
+    print(convert_code("029A"))
+    # print(68 * 29)
+    # assert convert_code("029A") == 68 * 29
     main()
