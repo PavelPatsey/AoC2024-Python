@@ -117,31 +117,19 @@ def convert_seq(seq, keypad) -> List:
 
 
 def convert_code(code):
-    # print(f"{code=}")
-
     conv_seqs_1 = convert_seq(code, NUM_KP)
-    # print(f"{conv_seqs_1=}")
 
     conv_seqs_2 = []
     for seq_1 in conv_seqs_1:
         conv_seqs_2.extend(convert_seq(seq_1, DIR_KP))
-    # print(f"{conv_seqs_2=}")
-    # assert "v<<A>>^A<A>AvA<^AA>A<vAAA>^A" in conv_seqs_2
 
     conv_seqs_3 = []
     for seq_2 in conv_seqs_2:
         conv_seqs_3.extend(convert_seq(seq_2, DIR_KP))
-    # print(f"{conv_seqs_3=}")
-    # assert (
-    #     "<vA<AA>>^AvAA<^A>A<v<A>>^AvA^A<vA>^A<v<A>^A>AAvA^A<v<A>A>^AAAvA<^A>A"
-    #     in conv_seqs_3
-    # )
 
     min_len = float("inf")
     for seq_3 in conv_seqs_3:
         min_len = min(min_len, len(seq_3))
-
-    # print(f"{min_len=}")
 
     code_num = int(code[:-1])
     return code_num * min_len
