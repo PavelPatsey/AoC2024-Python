@@ -62,13 +62,16 @@ def get_dist(start, end):
 
 
 @cache
-def dfs(start, char, keypad) -> List:
-    """Получить последовательности соответствующие Manhattan distance"""
+def make_seq(start, char, keypad):
+    """
+    Получить последовательности соответствующие Manhattan distance,
+    потом отфильтровать
+    """
     end = get_end(char, keypad)
     max_dist = get_dist(start, end)
     all_seqs = []
 
-    def _dfs(r, c, seq):
+    def dfs(r, c, seq):
         if len(seq) > max_dist:
             return
         if not in_keypad(r, c, keypad):
@@ -81,10 +84,11 @@ def dfs(start, char, keypad) -> List:
         for key, drt in DIRS4_dict.items():
             dr, dc = drt
             nr, nc = r + dr, c + dc
-            _dfs(nr, nc, seq + key)
+            dfs(nr, nc, seq + key)
 
-    _dfs(start[0], start[1], "")
-    return all_seqs, end
+    dfs(start[0], start[1], "")
+    filtered_seqs = filter_by_duplicates(all_seqs)
+    return filtered_seqs, end
 
 
 def get_len_without_duplicates(seq):
@@ -113,7 +117,7 @@ def convert_seq(seq, keypad) -> List:
     start = get_start(keypad)
     converted_seqs = [""]
     for char in seq:
-        all_char_seqs, start = dfs(start, char, keypad)
+        all_char_seqs, start = make_seq(start, char, keypad)
         new_converted_seq = []
         for seq in converted_seqs:
             for char_seq in all_char_seqs:
@@ -126,7 +130,6 @@ def covert_seq(prev_seq, keypad):
     new_seq = []
     for seq_1 in prev_seq:
         new_seq.extend(convert_seq(seq_1, keypad))
-    new_seq = filter_by_duplicates(new_seq)
     return new_seq
 
 
@@ -134,13 +137,9 @@ def convert_code(code, n=2):
     conv_seqs = convert_seq(code, NUM_KP)
     conv_seqs = filter_by_duplicates(conv_seqs)
 
-    conv_seqs_i = conv_seqs
-    for i in range(n - 1):
-        conv_seqs_i = covert_seq(conv_seqs_i, DIR_KP)
-
-    conv_seqs_n = []
-    for seq_2 in conv_seqs_i:
-        conv_seqs_n.extend(convert_seq(seq_2, DIR_KP))
+    conv_seqs_n = conv_seqs
+    for i in range(n):
+        conv_seqs_n = covert_seq(conv_seqs_n, DIR_KP)
 
     min_len = float("inf")
     for seq_3 in conv_seqs_n:
@@ -155,8 +154,8 @@ def main():
     codes = get_data(file)
     ans1 = sum(map(convert_code, codes))
     print(f"{ans1=}")
-    ans2 = sum(map(lambda x: convert_code(x, 25), codes))
-    print(f"{ans2=}")
+    # ans2 = sum(map(lambda x: convert_code(x, 25), codes))
+    # print(f"{ans2=}")
 
 
 if __name__ == "__main__":
@@ -166,15 +165,14 @@ if __name__ == "__main__":
     assert get_len_without_duplicates("1233") == 3
     assert get_len_without_duplicates("A^A^>^AvvvA") == 9
 
-    assert dfs(get_start(NUM_KP), "0", NUM_KP) == (["<A"], (3, 1))
-    assert dfs(get_start(NUM_KP), "A", NUM_KP) == (["A"], (3, 2))
-    assert dfs(get_start(DIR_KP), "<", DIR_KP) == (["v<<A", "<v<A"], (1, 0))
+    assert make_seq(get_start(NUM_KP), "0", NUM_KP) == (["<A"], (3, 1))
+    assert make_seq(get_start(NUM_KP), "A", NUM_KP) == (["A"], (3, 2))
+    assert make_seq(get_start(DIR_KP), "<", DIR_KP) == (["v<<A"], (1, 0))
 
-    assert set(convert_seq("029A", NUM_KP)) == {
-        "<A^A>^^AvvvA",
-        "<A^A^>^AvvvA",
+    assert convert_seq("029A", NUM_KP) == [
         "<A^A^^>AvvvA",
-    }
+        "<A^A>^^AvvvA",
+    ]
 
     print("test 1")
     assert convert_code("029A") == 68 * 29
@@ -187,8 +185,8 @@ if __name__ == "__main__":
     print("test 5")
     assert convert_code("379A") == 64 * 379
 
-    print("test 1 n=25")
-    assert convert_code("029A", 25) == 68 * 29
+    # print("test 1 n=25")
+    # assert convert_code("029A", 25) == 68 * 29
 
     print("start main()")
     cProfile.run("main()")
