@@ -122,21 +122,28 @@ def convert_seq(seq, keypad) -> List:
     return converted_seqs
 
 
-def convert_code(code):
-    conv_seqs_1 = convert_seq(code, NUM_KP)
-    conv_seqs_1 = filter_by_duplicates(conv_seqs_1)
+def covert_seq(prev_seq, keypad):
+    new_seq = []
+    for seq_1 in prev_seq:
+        new_seq.extend(convert_seq(seq_1, keypad))
+    new_seq = filter_by_duplicates(new_seq)
+    return new_seq
 
-    conv_seqs_2 = []
-    for seq_1 in conv_seqs_1:
-        conv_seqs_2.extend(convert_seq(seq_1, DIR_KP))
-    conv_seqs_2 = filter_by_duplicates(conv_seqs_2)
 
-    conv_seqs_3 = []
-    for seq_2 in conv_seqs_2:
-        conv_seqs_3.extend(convert_seq(seq_2, DIR_KP))
+def convert_code(code, n=2):
+    conv_seqs = convert_seq(code, NUM_KP)
+    conv_seqs = filter_by_duplicates(conv_seqs)
+
+    conv_seqs_i = conv_seqs
+    for i in range(n - 1):
+        conv_seqs_i = covert_seq(conv_seqs_i, DIR_KP)
+
+    conv_seqs_n = []
+    for seq_2 in conv_seqs_i:
+        conv_seqs_n.extend(convert_seq(seq_2, DIR_KP))
 
     min_len = float("inf")
-    for seq_3 in conv_seqs_3:
+    for seq_3 in conv_seqs_n:
         min_len = min(min_len, len(seq_3))
 
     code_num = int(code[:-1])
@@ -148,6 +155,8 @@ def main():
     codes = get_data(file)
     ans1 = sum(map(convert_code, codes))
     print(f"{ans1=}")
+    ans2 = sum(map(lambda x: convert_code(x, 25), codes))
+    print(f"{ans2=}")
 
 
 if __name__ == "__main__":
@@ -177,6 +186,9 @@ if __name__ == "__main__":
     assert convert_code("456A") == 64 * 456
     print("test 5")
     assert convert_code("379A") == 64 * 379
+
+    print("test 1 n=25")
+    assert convert_code("029A", 25) == 68 * 29
 
     print("start main()")
     cProfile.run("main()")
