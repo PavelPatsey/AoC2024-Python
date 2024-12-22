@@ -45,11 +45,7 @@ def get_changes(number, n):
     for _ in range(n):
         conv_number = convert(conv_number)
         secret_numbers.append(conv_number)
-    # print(f"{secret_numbers=}")
     prices = list(map(make_price, secret_numbers))
-    # print(f"{prices=}")
-    # print(f"{len(prices)=}")
-
     changes = []
     masks_set = set()
     for p in zip(prices, prices[1:], prices[2:], prices[3:], prices[4:]):
@@ -57,8 +53,6 @@ def get_changes(number, n):
         if mask not in masks_set:
             changes.append((price, mask))
             masks_set.add(mask)
-    # print(f"{changes=}")
-    # print(f"{len(changes)=}")
     return changes
 
 
@@ -69,22 +63,18 @@ def get_answer_2(numbers, n):
         for price, mask in changes:
             my_dict[mask] += price
 
-    max_mask = None
     max_price = 0
     for mask, price in my_dict.items():
         if price > max_price:
-            max_mask = mask
             max_price = price
-    print(f"{max_mask=}")
-    print(f"{max_price=}")
     return max_price
 
 
 def main():
     file = "input.txt"
     secret_numbers = get_data(file)
-    # asn1 = get_answer(secret_numbers, 2000)
-    # print(f"{asn1=}")
+    asn1 = get_answer(secret_numbers, 2000)
+    print(f"{asn1=}")
     asn2 = get_answer_2(secret_numbers, 2000)
     print(f"{asn2=}")
 
