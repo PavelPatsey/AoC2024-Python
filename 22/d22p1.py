@@ -47,8 +47,8 @@ def get_changes(number, n):
         secret_numbers.append(conv_number)
     # print(f"{secret_numbers=}")
     prices = list(map(make_price, secret_numbers))
-    print(f"{prices=}")
-    print(f"{len(prices)=}")
+    # print(f"{prices=}")
+    # print(f"{len(prices)=}")
 
     changes = []
     masks_set = set()
@@ -57,8 +57,8 @@ def get_changes(number, n):
         if mask not in masks_set:
             changes.append((price, mask))
             masks_set.add(mask)
-    print(f"{changes=}")
-    print(f"{len(changes)=}")
+    # print(f"{changes=}")
+    # print(f"{len(changes)=}")
     return changes
 
 
@@ -81,7 +81,7 @@ def get_answer_2(numbers, n):
 
 
 def main():
-    file = "test_input_2.txt"
+    file = "input.txt"
     secret_numbers = get_data(file)
     # asn1 = get_answer(secret_numbers, 2000)
     # print(f"{asn1=}")
