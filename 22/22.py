@@ -19,19 +19,23 @@ def convert(x):
     return y
 
 
-def get_answer(numbers):
-    return
+def get_answer(numbers, n):
+    res = numbers.copy()
+    for _ in range(n):
+        res = map(convert, res)
+    return sum(res)
 
 
 def main():
-    file = "test_input.txt"
+    file = "input.txt"
     secret_numbers = get_data(file)
-    print(secret_numbers)
-    print(get_answer(secret_numbers))
+    asn1 = get_answer(secret_numbers, 2000)
+    print(f"{asn1=}")
 
 
 if __name__ == "__main__":
     assert mix(15, 42) == 37
     assert prune(100000000) == 16113920
     assert convert(123) == 15887950
+    assert convert(convert(123)) == 16495136
     main()
