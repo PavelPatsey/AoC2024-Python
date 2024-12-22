@@ -63,11 +63,7 @@ def get_answer_2(numbers, n):
         for price, mask in changes:
             my_dict[mask] += price
 
-    max_price = 0
-    for mask, price in my_dict.items():
-        if price > max_price:
-            max_price = price
-    return max_price
+    return max(my_dict.values())
 
 
 def main():
