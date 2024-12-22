@@ -1,3 +1,4 @@
+import cProfile
 from collections import defaultdict
 
 
@@ -88,4 +89,5 @@ if __name__ == "__main__":
     assert (7, (-2, 1, -1, 3)) in get_changes(1, 2_000)
     assert (7, (-2, 1, -1, 3)) in get_changes(2, 2_000)
     assert (9, (-2, 1, -1, 3)) in get_changes(2024, 2_000)
-    main()
+
+    cProfile.run("main()")
