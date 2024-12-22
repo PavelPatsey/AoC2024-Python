@@ -33,7 +33,7 @@ def make_price(x):
     return int(str(x)[-1])
 
 
-def f(x):
+def make_price_mask(x):
     p0, p1, p2, p3, p4 = x
     mask = p1 - p0, p2 - p1, p3 - p2, p4 - p3
     return p4, mask
@@ -47,12 +47,12 @@ def get_changes(number, n):
         secret_numbers.append(conv_number)
     prices = list(map(make_price, secret_numbers))
     changes = []
-    masks_set = set()
+    visited_masks = set()
     for p in zip(prices, prices[1:], prices[2:], prices[3:], prices[4:]):
-        price, mask = f(p)
-        if mask not in masks_set:
+        price, mask = make_price_mask(p)
+        if mask not in visited_masks:
             changes.append((price, mask))
-            masks_set.add(mask)
+            visited_masks.add(mask)
     return changes
 
 
