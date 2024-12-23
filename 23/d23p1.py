@@ -1,12 +1,19 @@
+from collections import defaultdict
+
+
 def get_connections(input_file):
     with open(input_file, "r") as file:
         data = file.read().splitlines()
-    connections = [tuple(x.strip().split("-")) for x in data]
+    connections = defaultdict(set)
+    for line in data:
+        a, b = line.strip().split("-")
+        connections[a].add(b)
+        connections[b].add(a)
     return connections
 
 
-def get_answer(data):
-    return
+def get_answer(connections):
+    pass
 
 
 def main():
