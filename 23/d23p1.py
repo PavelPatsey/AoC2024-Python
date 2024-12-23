@@ -43,7 +43,7 @@ def get_answer(connections):
 
 
 def main():
-    file = "test_input.txt"
+    file = "input.txt"
     connections = get_connections(file)
     print(connections)
     ans1 = get_answer(connections)
