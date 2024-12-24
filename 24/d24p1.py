@@ -48,8 +48,6 @@ def get_answer(wires_dict, gates):
         if w3.startswith("z"):
             all_z.add(w3)
 
-    print(f"{all_z=}")
-
     while not all_z_found(all_z, wires):
         for gate in gates:
             w1, op, w2, w3 = gate
@@ -57,20 +55,15 @@ def get_answer(wires_dict, gates):
                 wires[w3] = execute_operator(wires[w1], wires[w2], op)
                 continue
 
-    print(f"{wires=}")
-    mapped = list(map(lambda x: (x, wires[x]), all_z))
-    print(f"{mapped=}")
-    sorted_mapped = sorted(mapped)[::-1]
-    print(f"{sorted_mapped=}")
-    mapped = list(map(lambda x: x[1], sorted_mapped))
+    mapped = map(lambda x: (x, wires[x]), all_z)
+    sorted_mapped = sorted(mapped, reverse=True)
+    mapped = map(lambda x: x[1], sorted_mapped)
     binary = "".join(str(x) for x in mapped)
-    print(f"{binary=}")
-    "0011111101000"
     return int(binary, 2)
 
 
 def main():
-    file = "test_input.txt"
+    file = "input.txt"
     wires, gates = get_data(file)
     ans1 = get_answer(wires, gates)
     print(f"{ans1=}")
