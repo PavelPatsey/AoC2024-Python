@@ -47,7 +47,7 @@ def answer(locks, keys):
 
 
 def main():
-    file = "test_input.txt"
+    file = "input.txt"
     items = get_items(file)
     locks, keys = made_locks_keys(items)
     asn1 = answer(locks, keys)
