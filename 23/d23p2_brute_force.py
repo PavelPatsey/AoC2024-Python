@@ -1,5 +1,5 @@
-from collections import defaultdict
 import cProfile
+from collections import defaultdict
 
 
 def get_network(input_file):
@@ -15,17 +15,14 @@ def get_network(input_file):
     return network, groups
 
 
-def update_party_info_in_groups(network, groups):
+def update_groups_by_party_info(network, groups):
     max_len = max(groups)
-
     for node in network:
         for group in groups[max_len]:
             if node not in group and all(map(lambda x: node in network[x], group)):
                 new_group = group + (node,)
                 new_group = tuple(sorted(new_group))
-                assert len(new_group) == max_len + 1
                 groups[max_len + 1].add(new_group)
-
     return groups
 
 
@@ -33,15 +30,13 @@ def answer_2(network, groups):
     party_is_found = False
     max_len = max(groups)
     while not party_is_found:
-        groups = update_party_info_in_groups(network, groups)
+        groups = update_groups_by_party_info(network, groups)
         if max(groups) > max_len:
             max_len = max(groups)
         else:
             party_is_found = True
-        print(f"{groups[max_len]=}")
-        print(f"{max_len=}")
     assert len(groups[max_len]) == 1
-    return ",".join(list(groups[max_len])[0])
+    return ",".join(groups[max_len].pop())
 
 
 def main():
