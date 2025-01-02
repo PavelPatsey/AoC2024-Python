@@ -1,4 +1,5 @@
 from collections import defaultdict
+import cProfile
 
 
 def get_network(input_file):
@@ -37,19 +38,18 @@ def answer_2(network, groups):
             max_len = max(groups)
         else:
             party_is_found = True
-        # print(f"{groups=}")
-        print(f"{max_len=}")
         print(f"{groups[max_len]=}")
+        print(f"{max_len=}")
     assert len(groups[max_len]) == 1
     return ",".join(list(groups[max_len])[0])
 
 
 def main():
-    file = "test_input.txt"
+    file = "input.txt"
     network, groups = get_network(file)
     ans2 = answer_2(network, groups)
     print(f"{ans2=}")
 
 
 if __name__ == "__main__":
-    main()
+    cProfile.run("main()")
