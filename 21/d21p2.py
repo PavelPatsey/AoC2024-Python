@@ -34,15 +34,6 @@ def in_keypad(r, c, keypad):
     return 0 <= r < rows and 0 <= c < cols
 
 
-def get_start(keypad):
-    if keypad == NUM_KP:
-        return 3, 2
-    elif keypad == DIR_KP:
-        return 0, 2
-    else:
-        raise Exception("Invalid keypad!")
-
-
 @cache
 def get_char_coords(char, keypad):
     rows = len(keypad)
@@ -64,8 +55,7 @@ def get_dist(start, end):
 @cache
 def possible_seqs(char_start, char_end, keypad):
     """
-    Получить последовательности соответствующие Manhattan distance,
-    при этом можно делать на больше одной смены направления, чтобы кнопки повторялись
+    Получить последовательности соответствующие Manhattan distance
     """
     start = get_char_coords(char_start, keypad)
     end = get_char_coords(char_end, keypad)
@@ -109,7 +99,6 @@ def compute_length_recursion(seq, depth):
             for subseq in possible_seqs(x, y, DIR_KP)
         )
         min_length = min(possible_lengths)
-        print(f"{min_length=}")
         length += min_length
     return length
 
@@ -131,9 +120,7 @@ def answer(codes, depth):
     res = 0
     for code in codes:
         seqs = convert_code(code, NUM_KP)
-        print(f"{seqs=}")
         length = min(map(lambda x: compute_length_recursion(x, depth), seqs))
-        print(f"{length=} {int(code[:-1])=}")
         res += length * int(code[:-1])
     return res
 

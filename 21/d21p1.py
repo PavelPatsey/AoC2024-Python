@@ -1,6 +1,6 @@
 import cProfile
 from functools import cache
-from typing import List, Set
+from typing import List
 
 DIRS4_dict = {
     "^": (-1, 0),
