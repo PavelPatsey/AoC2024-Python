@@ -65,13 +65,15 @@ def get_dist(start, end):
 def make_seq(start, char, keypad):
     """
     Получить последовательности соответствующие Manhattan distance,
-    потом отфильтровать
+    при этом можно делать на больше одной смены направления, чтобы кнопки повторялись
     """
     end = get_end(char, keypad)
     max_dist = get_dist(start, end)
     all_seqs = []
 
-    def dfs(r, c, seq):
+    def dfs(r, c, seq, prev_drt=None, turns_number=0):
+        if turns_number > 1:
+            return
         if len(seq) > max_dist:
             return
         if not in_keypad(r, c, keypad):
@@ -84,32 +86,11 @@ def make_seq(start, char, keypad):
         for key, drt in DIRS4_dict.items():
             dr, dc = drt
             nr, nc = r + dr, c + dc
-            dfs(nr, nc, seq + key)
+            dtn = 1 if (prev_drt is not None and prev_drt != drt) else 0
+            dfs(nr, nc, seq + key, drt, turns_number + dtn)
 
     dfs(start[0], start[1], "")
-    filtered_seqs = filter_by_duplicates(all_seqs)
-    return filtered_seqs, end
-
-
-def get_len_without_duplicates(seq):
-    """Получить длину без дубликатов"""
-    prev = seq[0]
-    res = 1
-    for curr in seq[1:]:
-        if curr != prev:
-            res += 1
-        prev = curr
-    return res
-
-
-def filter_by_duplicates(seqs):
-    """Отфильтровать последовательности с учетом дубликатов"""
-    f = get_len_without_duplicates
-    required_length = float("inf")
-    for s in seqs:
-        required_length = min(required_length, f(s))
-    filtered = list(filter(lambda x: f(x) == required_length, seqs))
-    return filtered
+    return all_seqs, end
 
 
 def convert_seq(seq, keypad) -> List:
@@ -126,20 +107,20 @@ def convert_seq(seq, keypad) -> List:
     return converted_seqs
 
 
-def covert_seq(prev_seq, keypad):
-    new_seq = []
-    for seq_1 in prev_seq:
-        new_seq.extend(convert_seq(seq_1, keypad))
-    return new_seq
+def convert_seqs(prev_seqs, keypad):
+    """Из набора последовательностей, получить следующие возможные последовательности"""
+    new_seqs = []
+    for seq_1 in prev_seqs:
+        new_seqs.extend(convert_seq(seq_1, keypad))
+    return new_seqs
 
 
 def convert_code(code, n=2):
     conv_seqs = convert_seq(code, NUM_KP)
-    conv_seqs = filter_by_duplicates(conv_seqs)
 
     conv_seqs_n = conv_seqs
     for i in range(n):
-        conv_seqs_n = covert_seq(conv_seqs_n, DIR_KP)
+        conv_seqs_n = convert_seqs(conv_seqs_n, DIR_KP)
 
     min_len = float("inf")
     for seq_3 in conv_seqs_n:
@@ -154,16 +135,10 @@ def main():
     codes = get_data(file)
     ans1 = sum(map(convert_code, codes))
     print(f"{ans1=}")
-    # ans2 = sum(map(lambda x: convert_code(x, 25), codes))
-    # print(f"{ans2=}")
 
 
 if __name__ == "__main__":
     assert get_dist((3, 2), (1, 1)) == 3
-
-    assert get_len_without_duplicates("123") == 3
-    assert get_len_without_duplicates("1233") == 3
-    assert get_len_without_duplicates("A^A^>^AvvvA") == 9
 
     assert make_seq(get_start(NUM_KP), "0", NUM_KP) == (["<A"], (3, 1))
     assert make_seq(get_start(NUM_KP), "A", NUM_KP) == (["A"], (3, 2))
@@ -184,9 +159,6 @@ if __name__ == "__main__":
     assert convert_code("456A") == 64 * 456
     print("test 5")
     assert convert_code("379A") == 64 * 379
-
-    # print("test 1 n=25")
-    # assert convert_code("029A", 25) == 68 * 29
 
     print("start main()")
     cProfile.run("main()")
