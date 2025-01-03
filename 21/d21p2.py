@@ -143,8 +143,8 @@ def main():
     codes = get_data(file)
     ans1 = answer(codes, 2)
     print(f"{ans1=}")
-    # ans2 = answer(codes, 25)
-    # print(f"{ans1=}")
+    ans2 = answer(codes, 25)
+    print(f"{ans2=}")
 
 
 if __name__ == "__main__":
