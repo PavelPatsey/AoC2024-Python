@@ -19,26 +19,32 @@ def get_start(grid):
 
 
 def get_answer(grid):
-    res = None
+    min_score = None
+    min_cases = []
     sr, sc = get_start(grid)
     visited = set()
-    queue = [(0, sr, sc, 0, 1)]
+    queue = [(0, sr, sc, 0, 1, frozenset({(sr, sc)}))]
 
     while queue:
-        score, r, c, dr, dc = heapq.heappop(queue)
+        score, r, c, dr, dc, points = heapq.heappop(queue)
         visited.add((r, c, dr, dc))
         if grid[r][c] == "E":
-            res = score
+            if min_score is None:
+                min_score = score
+            if score == min_score:
+                min_cases.append((score, points))
+                continue
             break
-        for new_score, nr, nc, ndr, ndc in [
-            (score + 1, r + dr, c + dc, dr, dc),
-            (score + 1000, r, c, dc, -dr),
-            (score + 1000, r, c, -dc, dr),
+        for new_score, nr, nc, ndr, ndc, new_points in [
+            (score + 1, r + dr, c + dc, dr, dc, points | {(r + dr, c + dc)}),
+            (score + 1000, r, c, dc, -dr, points),
+            (score + 1000, r, c, -dc, dr, points),
         ]:
             if grid[nr][nc] != "#" and (nr, nc, ndr, ndc) not in visited:
-                heapq.heappush(queue, (new_score, nr, nc, ndr, ndc))
+                heapq.heappush(queue, (new_score, nr, nc, ndr, ndc, new_points))
 
-    return res
+    all_min_points = {point for _, points in min_cases for point in points}
+    return len(all_min_points)
 
 
 def main():
